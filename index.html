@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XP Routine & Execution Engine</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,38 +26,47 @@
             }
         }
     </script>
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #090d16;
             color: #f8fafc;
             overflow-x: hidden;
         }
-
         .glass-panel {
             background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
         .glass-card {
             background: rgba(30, 41, 59, 0.4);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .glow-emerald { box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3); }
-        .glow-indigo { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3); }
-        .glow-amber { box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.3); }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #090d16; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+        }
+        .glow-indigo {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3);
+        }
+        .glow-amber {
+            box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.3);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
         .heatmap-grid {
             display: grid;
             grid-template-rows: repeat(7, minmax(0, 1fr));
@@ -63,64 +74,105 @@
             grid-auto-columns: minmax(0, 1fr);
             gap: 3px;
         }
-
         @keyframes slideIn {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
-        .toast-animate { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .toast-animate {
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .sync-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Yearly Heatmap Tooltip */
+        .heatmap-cell {
+            position: relative;
+        }
+        .heatmap-cell::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 9999;
+            border: 1px solid #1e293b;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            letter-spacing: 0.2px;
+            line-height: 1.2;
+        }
+        .heatmap-cell:hover::after {
+            opacity: 1;
+        }
 
         @media print {
-            @page { size: A4 landscape; margin: 8mm; }
-            body { background: #ffffff !important; color: #000000 !important; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
+            @page {
+                size: A4 landscape;
+                margin: 8mm;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
             .printable-sheet {
-                width: 100% !important; background: white !important; color: black !important;
-                border-collapse: collapse !important; table-layout: fixed !important; word-wrap: break-word !important;
+                width: 100% !important;
+                background: white !important;
+                color: black !important;
+                border-collapse: collapse !important;
+                table-layout: fixed !important;
+                word-wrap: break-word !important;
             }
-            .printable-sheet th, .printable-sheet td {
-                border: 1px solid #000000 !important; padding: 5px 3px !important;
-                text-align: center !important; vertical-align: middle !important;
-                font-size: 9px !important; word-break: break-word !important;
+            .printable-sheet th,
+            .printable-sheet td {
+                border: 1px solid #000000 !important;
+                padding: 5px 3px !important;
+                text-align: center !important;
+                vertical-align: middle !important;
+                font-size: 9px !important;
+                word-break: break-word !important;
             }
-            .printable-sheet th:first-child, .printable-sheet td:first-child {
-                text-align: left !important; padding-left: 6px !important;
-                font-weight: 700 !important; width: 22% !important; line-height: 1.3 !important;
+            .printable-sheet th:first-child,
+            .printable-sheet td:first-child {
+                text-align: left !important;
+                padding-left: 6px !important;
+                font-weight: 700 !important;
+                width: 22% !important;
+                line-height: 1.3 !important;
             }
         }
-        .heatmap-cell {
-    position: relative;
-}
-
-.heatmap-cell::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 4px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #0f172a;
-    color: #cbd5e1;
-    padding: 3px 7px;
-    border-radius: 4px;
-    font-size: 9px;
-    font-weight: 600;
-    white-space: nowrap;
-    z-index: 9999;
-    border: 1px solid #1e293b;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.12s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    letter-spacing: 0.2px;
-    line-height: 1.2;
-}
-
-.heatmap-cell:hover::after {
-    opacity: 1;
-}
-
-        .print-only { display: none; }
+        .print-only {
+            display: none;
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
@@ -154,9 +206,7 @@
             <tbody id="printableSheetBody"></tbody>
             <tfoot>
                 <tr>
-                    <td colspan="32" style="text-align: center !important; font-weight: 700 !important; font-style: normal !important; font-size: 10px !important; letter-spacing: 0.5px; padding: 8px !important; border-top: 2px solid #000 !important;">
-                        Powered by Code Breaker
-                    </td>
+                    <td colspan="32" style="text-align: center !important; font-weight: 700 !important; font-style: normal !important; font-size: 10px !important; letter-spacing: 0.5px; padding: 8px !important; border-top: 2px solid #000 !important;">Powered by Code Breaker</td>
                 </tr>
             </tfoot>
         </table>
@@ -164,7 +214,7 @@
 
     <!-- ==================== MAIN APP ==================== -->
     <div id="appContainer" class="no-print min-h-screen flex flex-col">
-        
+
         <header class="sticky top-0 z-40 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3">
             <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
@@ -174,94 +224,53 @@
                         <p class="text-xs text-slate-400 font-medium">XP Routine & Habit System</p>
                     </div>
                 </div>
-
                 <nav class="flex items-center gap-1 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 text-xs font-semibold overflow-x-auto">
                     <button onclick="switchTab('day')" id="tab-day" class="tab-btn px-4 py-2 rounded-lg transition-all duration-200 bg-indigo-600 text-white shadow-md"><i class="fa-solid fa-calendar-day mr-1.5"></i> Day View</button>
                     <button onclick="switchTab('weekly')" id="tab-weekly" class="tab-btn px-4 py-2 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800"><i class="fa-solid fa-calendar-week mr-1.5"></i> Weekly</button>
                     <button onclick="switchTab('monthly')" id="tab-monthly" class="tab-btn px-4 py-2 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800"><i class="fa-solid fa-calendar-days mr-1.5"></i> Monthly</button>
                     <button onclick="switchTab('yearly')" id="tab-yearly" class="tab-btn px-4 py-2 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800"><i class="fa-solid fa-chart-simple mr-1.5"></i> 365 Heatmap</button>
                 </nav>
-
                 <div class="flex items-center gap-2">
-                    <button onclick="openPrintModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-print text-indigo-400"></i><span>A4 Print Sheet</span>
-                    </button>
-                    <button id="syncNowBtn" onclick="manualSync()" class="px-3.5 py-2 bg-green-600 hover:bg-green-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-green-900/30 flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up" id="syncIcon"></i><span>SYNC NOW</span>
-                    </button>
-                    <button id="lockToggleBtn" onclick="toggleLock()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-900/30 flex items-center gap-2">
-                        <i class="fa-solid fa-lock" id="lockIcon"></i><span id="lockText">LOCK BLOCKS</span>
-                    </button>
+                    <button onclick="openPrintModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition flex items-center gap-2"><i class="fa-solid fa-print text-indigo-400"></i><span>A4 Print Sheet</span></button>
+                    <button id="syncNowBtn" onclick="manualSync()" class="px-3.5 py-2 bg-green-600 hover:bg-green-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-green-900/30 flex items-center gap-2"><i class="fa-solid fa-cloud-arrow-up" id="syncIcon"></i><span>SYNC NOW</span></button>
+                    <button id="lockToggleBtn" onclick="toggleLock()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-900/30 flex items-center gap-2"><i class="fa-solid fa-lock" id="lockIcon"></i><span id="lockText">LOCK BLOCKS</span></button>
                 </div>
             </div>
         </header>
 
         <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-            
             <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-card p-4 rounded-2xl border border-slate-800 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 text-2xl font-bold">🔥</div>
-                    <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Current Streak</p>
-                        <div class="flex items-baseline gap-2"><span id="metricStreak" class="text-2xl font-extrabold text-amber-400">0</span><span class="text-xs text-slate-500 font-semibold">Days</span></div>
-                    </div>
+                    <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Current Streak</p><div class="flex items-baseline gap-2"><span id="metricStreak" class="text-2xl font-extrabold text-amber-400">0</span><span class="text-xs text-slate-500 font-semibold">Days</span></div></div>
                 </div>
                 <div class="glass-card p-4 rounded-2xl border border-slate-800 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-2xl">⚡</div>
-                    <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Today's XP</p>
-                        <div class="flex items-baseline gap-2"><span id="metricXp" class="text-2xl font-extrabold text-indigo-400">0</span><span id="metricMaxXp" class="text-xs text-slate-500 font-semibold">/ 100 XP</span></div>
-                    </div>
+                    <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Today's XP</p><div class="flex items-baseline gap-2"><span id="metricXp" class="text-2xl font-extrabold text-indigo-400">0</span><span id="metricMaxXp" class="text-xs text-slate-500 font-semibold">/ 100 XP</span></div></div>
                 </div>
                 <div class="glass-card p-4 rounded-2xl border border-slate-800 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl">🎯</div>
-                    <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Completion</p>
-                        <div class="flex items-baseline gap-2"><span id="metricRate" class="text-2xl font-extrabold text-emerald-400">0%</span><span class="text-xs text-slate-500 font-semibold">(80% Target)</span></div>
-                    </div>
+                    <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Completion</p><div class="flex items-baseline gap-2"><span id="metricRate" class="text-2xl font-extrabold text-emerald-400">0%</span><span class="text-xs text-slate-500 font-semibold">(80% Target)</span></div></div>
                 </div>
                 <div class="glass-card p-4 rounded-2xl border border-slate-800 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl" id="rankBadgeIcon">🛡️</div>
-                    <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Today Status</p>
-                        <span id="rankBadgeText" class="text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 inline-block mt-0.5">NEEDS FOCUS</span>
-                    </div>
+                    <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Today Status</p><span id="rankBadgeText" class="text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 inline-block mt-0.5">NEEDS FOCUS</span></div>
                 </div>
             </section>
-
             <div id="view-day" class="view-panel space-y-8">
                 <div id="aiBadge" class="p-4 rounded-2xl glass-card border border-slate-800 flex items-center justify-between gap-4 transition-all duration-300">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-sm font-bold">🤖</div>
-                        <div>
-                            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">AI Execution Benchmark</p>
-                            <p id="aiBadgeMessage" class="text-sm font-bold text-slate-200">Comparing with yesterday's performance...</p>
-                        </div>
-                    </div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-sm font-bold">🤖</div><div><p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">AI Execution Benchmark</p><p id="aiBadgeMessage" class="text-sm font-bold text-slate-200">Comparing with yesterday's performance...</p></div></div>
                     <span id="aiBadgeTag" class="text-xs font-black px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">CALCULATING</span>
                 </div>
-
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div class="lg:col-span-7 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-extrabold text-white flex items-center gap-2"><i class="fa-solid fa-cubes text-indigo-400"></i> Routine Task Blocks</h2>
-                                <p id="taskInstructionText" class="text-xs text-slate-400">Click anywhere on a row to mark task complete.</p>
-                            </div>
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300"><span id="blockCount">0</span>/7 Blocks</span>
-                        </div>
+                        <div class="flex items-center justify-between"><div><h2 class="text-lg font-extrabold text-white flex items-center gap-2"><i class="fa-solid fa-cubes text-indigo-400"></i> Routine Task Blocks</h2><p id="taskInstructionText" class="text-xs text-slate-400">Click anywhere on a row to mark task complete.</p></div><span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300"><span id="blockCount">0</span>/7 Blocks</span></div>
                         <div id="taskList" class="space-y-3"></div>
-                        <div id="addBlockContainer" class="glass-panel p-4 rounded-2xl border border-indigo-500/30 space-y-3">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider"><i class="fa-solid fa-plus-circle mr-1"></i> Add Custom Block & XP</h3>
-                                <span class="text-[10px] text-slate-400 font-medium">Set custom XP value per block</span>
-                            </div>
+                        <div id="addBlockContainer" class="glass-panel p-4 rounded-2xl border border-indigo-500/30 space-y-3 hidden">
+                            <div class="flex items-center justify-between"><h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider"><i class="fa-solid fa-plus-circle mr-1"></i> Add Custom Block & XP</h3><span class="text-[10px] text-slate-400 font-medium">Set custom XP value per block</span></div>
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <input type="text" id="newBlockName" placeholder="Block Name (e.g. 06:00 - 07:00 AM - Physics)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="newBlockXp" placeholder="XP (20)" min="1" max="500" class="w-full sm:w-28 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
-                                    <span class="text-xs font-bold text-indigo-400 hidden sm:inline">XP</span>
-                                </div>
+                                <div class="flex items-center gap-2"><input type="number" id="newBlockXp" placeholder="XP (20)" min="1" max="500" class="w-full sm:w-28 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"><span class="text-xs font-bold text-indigo-400 hidden sm:inline">XP</span></div>
                                 <button onclick="addNewBlock()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"><i class="fa-solid fa-plus"></i> Add</button>
                             </div>
                         </div>
@@ -272,100 +281,38 @@
                     </div>
                     <div class="lg:col-span-5 space-y-6">
                         <div id="targetGlowPanel" class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5 transition-all duration-300">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Execution Progress</h3>
-                                <span id="progressTargetBadge" class="text-xs font-extrabold px-2.5 py-1 rounded-md bg-slate-800 text-slate-300">TARGET: 80%</span>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-xs font-bold"><span class="text-slate-400">Total Completion</span><span id="progressBarText" class="text-emerald-400">0%</span></div>
-                                <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800"><div id="progressBarFill" class="h-full bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-full transition-all duration-500" style="width: 0%"></div></div>
-                            </div>
-                            <div class="pt-2">
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">14-Day XP Trend</p>
-                                <div class="h-48 w-full"><canvas id="xpTrendChart"></canvas></div>
-                            </div>
+                            <div class="flex items-center justify-between"><h3 class="text-sm font-bold text-white uppercase tracking-wider">Execution Progress</h3><span id="progressTargetBadge" class="text-xs font-extrabold px-2.5 py-1 rounded-md bg-slate-800 text-slate-300">TARGET: 80%</span></div>
+                            <div class="space-y-2"><div class="flex justify-between text-xs font-bold"><span class="text-slate-400">Total Completion</span><span id="progressBarText" class="text-emerald-400">0%</span></div><div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800"><div id="progressBarFill" class="h-full bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-full transition-all duration-500" style="width: 0%"></div></div></div>
+                            <div class="pt-2"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">14-Day XP Trend</p><div class="h-48 w-full"><canvas id="xpTrendChart"></canvas></div></div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div id="view-weekly" class="view-panel hidden space-y-6">
-                <div><h2 class="text-lg font-extrabold text-white">Current Week Performance</h2><p class="text-xs text-slate-400">Overview of your last 7 days execution ranks and XP totals.</p></div>
-                <div id="weeklyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4"></div>
-            </div>
-
+            <div id="view-weekly" class="view-panel hidden space-y-6"><div><h2 class="text-lg font-extrabold text-white">Current Week Performance</h2><p class="text-xs text-slate-400">Overview of your last 7 days execution ranks and XP totals.</p></div><div id="weeklyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4"></div></div>
             <div id="view-monthly" class="view-panel hidden space-y-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div><h2 class="text-lg font-extrabold text-white">Monthly Execution Grid</h2><p class="text-xs text-slate-400">Daily consistency tracker with XP & completion rate per day.</p></div>
-                    <div class="flex items-center gap-4 text-xs font-bold bg-slate-900/80 p-3 rounded-xl border border-slate-800">
-                        <div><span class="text-slate-500">Total XP:</span> <span id="monthlyTotalXp" class="text-indigo-400 text-base">0</span></div>
-                        <div class="w-px h-4 bg-slate-700"></div>
-                        <div><span class="text-slate-500">Avg Rate:</span> <span id="monthlyAvgRate" class="text-emerald-400 text-base">0%</span></div>
-                        <div class="w-px h-4 bg-slate-700"></div>
-                        <div><span class="text-slate-500">Best Day:</span> <span id="monthlyBestDay" class="text-amber-400 text-base">—</span></div>
-                    </div>
-                </div>
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800">
-                    <div class="grid grid-cols-7 gap-2 mb-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
-                    <div id="monthlyCalendarGrid" class="grid grid-cols-7 gap-2"></div>
-                    <div class="flex items-center justify-end gap-4 mt-4 pt-3 border-t border-slate-800/60 text-[10px] font-semibold text-slate-500">
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500/60 border border-emerald-400/30"></span> 80%+</span>
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-indigo-500/50 border border-indigo-400/30"></span> 50-79%</span>
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-500/40 border border-amber-400/30"></span> 1-49%</span>
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-slate-800 border border-slate-700"></span> 0%</span>
-                    </div>
-                </div>
+                <div class="flex flex-wrap items-center justify-between gap-4"><div><h2 class="text-lg font-extrabold text-white">Monthly Execution Grid</h2><p class="text-xs text-slate-400">Daily consistency tracker with XP & completion rate per day.</p></div><div class="flex items-center gap-4 text-xs font-bold bg-slate-900/80 p-3 rounded-xl border border-slate-800"><div><span class="text-slate-500">Total XP:</span> <span id="monthlyTotalXp" class="text-indigo-400 text-base">0</span></div><div class="w-px h-4 bg-slate-700"></div><div><span class="text-slate-500">Avg Rate:</span> <span id="monthlyAvgRate" class="text-emerald-400 text-base">0%</span></div><div class="w-px h-4 bg-slate-700"></div><div><span class="text-slate-500">Best Day:</span> <span id="monthlyBestDay" class="text-amber-400 text-base">—</span></div></div></div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800"><div class="grid grid-cols-7 gap-2 mb-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div><div id="monthlyCalendarGrid" class="grid grid-cols-7 gap-2"></div></div>
             </div>
-
             <div id="view-yearly" class="view-panel hidden space-y-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div><h2 class="text-lg font-extrabold text-white">365-Day Consistency Heatmap</h2><p class="text-xs text-slate-400">GitHub-style visualization — each cell = one day. Hover for details.</p></div>
-                    <div class="flex items-center gap-3 text-xs font-bold bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800"><span class="text-slate-400">Year:</span><span id="yearlyYearLabel" class="text-white"></span><span class="text-slate-600">|</span><span class="text-slate-400">Elite Days:</span><span id="yearlyEliteCount" class="text-emerald-400">0</span></div>
-                </div>
-                <div class="glass-panel p-6 rounded-2xl border border-slate-800 overflow-x-auto space-y-4">
-                    <div id="yearlyMonthLabels" class="flex gap-0 text-[10px] font-bold text-slate-500 uppercase tracking-wider min-w-[750px] pl-1 mb-1"></div>
-                    <div id="yearlyHeatmap" class="heatmap-grid min-w-[750px] h-28"></div>
-                    <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800/60">
-                        <span>Less</span>
-                        <div class="flex items-center gap-1.5"><div class="w-3.5 h-3.5 rounded-sm bg-slate-800 border border-slate-700"></div><div class="w-3.5 h-3.5 rounded-sm bg-amber-500/40 border border-amber-500/30"></div><div class="w-3.5 h-3.5 rounded-sm bg-indigo-500/55 border border-indigo-500/30"></div><div class="w-3.5 h-3.5 rounded-sm bg-emerald-500/65 border border-emerald-500/30"></div><div class="w-3.5 h-3.5 rounded-sm bg-emerald-400 border border-emerald-300/40"></div></div>
-                        <span>Elite</span>
-                    </div>
-                </div>
+                <div class="flex flex-wrap items-center justify-between gap-4"><div><h2 class="text-lg font-extrabold text-white">365-Day Consistency Heatmap</h2><p class="text-xs text-slate-400">GitHub-style visualization — each cell = one day. Hover for details.</p></div><div class="flex items-center gap-3 text-xs font-bold bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800"><span class="text-slate-400">Year:</span><span id="yearlyYearLabel" class="text-white"></span><span class="text-slate-600">|</span><span class="text-slate-400">Elite Days:</span><span id="yearlyEliteCount" class="text-emerald-400">0</span></div></div>
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 overflow-x-auto space-y-4"><div id="yearlyMonthLabels" class="flex gap-0 text-[10px] font-bold text-slate-500 uppercase tracking-wider min-w-[750px] pl-1 mb-1"></div><div id="yearlyHeatmap" class="heatmap-grid min-w-[750px] h-28"></div><div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800/60"><span>Less</span><div class="flex items-center gap-1.5"><div class="w-3.5 h-3.5 rounded-sm bg-slate-800 border border-slate-700"></div><div class="w-3.5 h-3.5 rounded-sm bg-amber-500/40 border border-amber-500/30"></div><div class="w-3.5 h-3.5 rounded-sm bg-indigo-500/55 border border-indigo-500/30"></div><div class="w-3.5 h-3.5 rounded-sm bg-emerald-500/65 border border-emerald-500/30"></div><div class="w-3.5 h-3.5 rounded-sm bg-emerald-400 border border-emerald-300/40"></div></div><span>Elite</span></div></div>
             </div>
         </main>
     </div>
 
-    <!-- Modals -->
-    <div id="factoryModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
-        <div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-rose-500/30 space-y-5 text-center">
-            <div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mx-auto">⚠️</div>
-            <div class="space-y-2"><h3 class="text-lg font-extrabold text-white">Confirm Factory Reset</h3><p class="text-xs text-slate-400">This action is permanent! It will wipe all custom task blocks, execution history, streaks, and settings from LocalStorage.</p></div>
-            <div class="flex gap-3"><button onclick="closeFactoryModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition">Cancel</button><button onclick="confirmFactoryReset()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-rose-600/30">Wipe Everything</button></div>
-        </div>
-    </div>
-
-    <div id="printModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
-        <div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-slate-700 space-y-5">
-            <div class="flex items-center justify-between"><h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-print text-indigo-400"></i> Print A4 Habit Sheet</h3><button onclick="closePrintModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button></div>
-            <div class="space-y-4 text-xs">
-                <div><label class="block font-semibold text-slate-300 mb-1">Select Month & Year</label><input type="month" id="printMonthPicker" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"></div>
-                <div><label class="block font-semibold text-slate-300 mb-1">Motivational Quote (Optional)</label><input type="text" id="printQuoteInput" value="Successful people are simply those with successful habits. - Brian Tracy" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"></div>
-            </div>
-            <p class="text-[10px] text-amber-400/80 bg-amber-500/5 rounded-lg p-2 border border-amber-500/10"><i class="fa-solid fa-info-circle mr-1"></i> <strong>Tip:</strong> In your browser's print dialog, disable <em>"Headers and footers"</em> to hide automatic URL & timestamp.</p>
-            <div class="flex gap-3 pt-2"><button onclick="closePrintModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition">Cancel</button><button onclick="executePrint()" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-indigo-600/30">Generate Print</button></div>
-        </div>
-    </div>
+    <div id="factoryModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print"><div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-rose-500/30 space-y-5 text-center"><div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mx-auto">⚠️</div><div class="space-y-2"><h3 class="text-lg font-extrabold text-white">Confirm Factory Reset</h3><p class="text-xs text-slate-400">This action is permanent! It will wipe all custom task blocks, execution history, streaks, and settings from LocalStorage.</p></div><div class="flex gap-3"><button onclick="closeFactoryModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition">Cancel</button><button onclick="confirmFactoryReset()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-rose-600/30">Wipe Everything</button></div></div></div>
+    <div id="printModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print"><div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-slate-700 space-y-5"><div class="flex items-center justify-between"><h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-print text-indigo-400"></i> Print A4 Habit Sheet</h3><button onclick="closePrintModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button></div><div class="space-y-4 text-xs"><div><label class="block font-semibold text-slate-300 mb-1">Select Month & Year</label><input type="month" id="printMonthPicker" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"></div><div><label class="block font-semibold text-slate-300 mb-1">Motivational Quote (Optional)</label><input type="text" id="printQuoteInput" value="Successful people are simply those with successful habits. - Brian Tracy" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"></div></div><p class="text-[10px] text-amber-400/80 bg-amber-500/5 rounded-lg p-2 border border-amber-500/10"><i class="fa-solid fa-info-circle mr-1"></i> <strong>Tip:</strong> In your browser's print dialog, disable <em>"Headers and footers"</em> to hide automatic URL & timestamp.</p><div class="flex gap-3 pt-2"><button onclick="closePrintModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition">Cancel</button><button onclick="executePrint()" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-indigo-600/30">Generate Print</button></div></div></div>
 
     <script>
-        // ═══════════════════════════════════════
-        // GITHUB SYNC CONFIG (Khali chhodo agar sync nahi chahiye)
-        // ═══════════════════════════════════════
-        const GIST_ID = "7ce2d960da61b863213cb1aa21369532";  // ← Gist ID yahan hai
-        const GITHUB_TOKEN = "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";  // 👈👈👈 YAHAN APNA TOKEN DAALO (agar sync chahiye) - abhi khaali hai
-        const AUTO_SYNC_ENABLED = false;  // false = no auto sync, true = auto sync (token bhara ho to)
-        
-        const STORAGE_KEY = 'XP_ENGINE_STATE_V2';
+        // ═══════════════════════════════════════════
+        // GITHUB SYNC CONFIGURATION
+        // ═══════════════════════════════════════════
+        const GIST_ID = "040f519b01c155b9cfc83f4c050b601b"; // 👈 Apna Gist ID
+        const GITHUB_TOKEN = "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"; // 👈👈👈 TOKEN YAHAN DAALO (agar sync chahiye)
+        const AUTO_SYNC_ENABLED = true; // true = auto sync har 30 sec mein
+        const SYNC_INTERVAL = 10000; // 30 seconds
 
+        const STORAGE_KEY = 'XP_ENGINE_STATE_V2';
         const DEFAULT_BLOCKS = [
             { id: 'b1', name: '06:00 - 07:00 AM - Morning Focus Block', xp: 20 },
             { id: 'b2', name: '07:00 - 01:00 PM - Core Study & Problem Solving', xp: 30 },
@@ -378,67 +325,58 @@
         let trendChartInstance = null;
 
         function playTickSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator(), gain = ctx.createGain();
-                osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime);
+            try { const ctx = new(window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(),
+                    gain = ctx.createGain(); osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-                osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.05);
-            } catch(e) {}
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.05); } catch (e) {}
         }
 
-        function getTodayKey() {
-            const now = new Date();
-            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        }
-        function getYesterdayKey() {
-            const d = new Date(); d.setDate(d.getDate() - 1);
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        function getTodayKey() { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
+
+        function getYesterdayKey() { const d = new Date();
+            d.setDate(d.getDate() - 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer'),
+                t = document.createElement('div');
+            t.className =
+                `toast-animate pointer-events-auto px-4 py-3 rounded-xl border text-xs font-bold shadow-xl flex items-center gap-2 ${type==='danger'?'bg-rose-950/90 border-rose-500/40 text-rose-200':type==='success'?'bg-emerald-950/90 border-emerald-500/40 text-emerald-200':'bg-slate-900/90 border-indigo-500/40 text-slate-200'}`;
+            t.innerHTML =
+                `<i class="fa-solid ${type==='danger'?'fa-circle-exclamation':'fa-circle-check'}"></i> ${msg}`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0';
+                t.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => t.remove(), 300); }, 3000);
         }
 
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast-animate pointer-events-auto px-4 py-3 rounded-xl border text-xs font-bold shadow-xl flex items-center gap-2 ${
-                type === 'danger' ? 'bg-rose-950/90 border-rose-500/40 text-rose-200' :
-                type === 'success' ? 'bg-emerald-950/90 border-emerald-500/40 text-emerald-200' :
-                'bg-slate-900/90 border-indigo-500/40 text-slate-200'
-            }`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'danger' ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i> ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 3000);
-        }
-
-        // Sync functions (tabhi chalein jab token ho)
+        // ═══════════════════════ CLOUD SYNC ═══════════════════════
         async function syncToCloud(silent = true) {
-            if (!GITHUB_TOKEN) return;  // token nahi hai to chupchaap niklo
+            if (!GITHUB_TOKEN) return;
             try {
-                await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ files: { 'xp_data.json': { content: JSON.stringify(state) } } })
-                });
-                if (!silent) showToast('✅ Synced to cloud!', 'success');
-            } catch (e) { if (!silent) showToast('⚠️ Sync failed', 'danger'); }
+                await fetch(`https://api.github.com/gists/${GIST_ID}`, { method: 'PATCH', headers: { 'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json' }, body: JSON.stringify({ files: { 'xp_data.json': { content: JSON.stringify(state) } } }) });
+                if (!silent) showToast('✅ Uploaded to cloud!', 'success');
+            } catch (e) { if (!silent) showToast('⚠️ Upload failed', 'danger'); }
         }
 
-        async function loadFromCloud() {
+        async function loadFromCloud(silent = true) {
             if (!GITHUB_TOKEN) return false;
             try {
-                const res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-                const gist = await res.json();
+                const res = await fetch(`https://api.github.com/gists/${GIST_ID}`),
+                    gist = await res.json();
                 if (gist.files && gist.files['xp_data.json']) {
-                    const cloudData = JSON.parse(gist.files['xp_data.json'].content);
-                    const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                    if (JSON.stringify(cloudData) !== JSON.stringify(localData)) {
-                        state = cloudData;
+                    const cloudData = JSON.parse(gist.files['xp_data.json'].content),
+                        localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                    if (JSON.stringify(cloudData) !== JSON.stringify(localData)) { state = cloudData;
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-                        updateStreaks(); renderApp();
-                        showToast('📥 Latest data loaded from cloud!', 'success');
-                        return true;
-                    }
+                        updateStreaks();
+                        renderApp(); if (!silent) showToast('📥 Latest data loaded from cloud!', 'success'); return true; }
                 }
             } catch (e) {}
             return false;
@@ -446,281 +384,390 @@
 
         async function manualSync() {
             if (!GITHUB_TOKEN) { showToast('Please set your GitHub token first.', 'danger'); return; }
-            await syncToCloud(false);
+            const syncIcon = document.getElementById('syncIcon'); if (syncIcon) syncIcon.className =
+                'fa-solid fa-cloud-arrow-up sync-spin';
+            await syncToCloud(true);
+            const loaded = await loadFromCloud(false); if (!loaded) showToast('✅ Synced! Data is up to date.',
+                'success'); if (syncIcon) syncIcon.className = 'fa-solid fa-cloud-arrow-up';
         }
 
         function loadState() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) { try { state = JSON.parse(stored); } catch(e) {} }
-            const today = getTodayKey();
-            if (!state.history[today]) state.history[today] = { completedIds: [], earnedXp: 0 };
+            const stored = localStorage.getItem(STORAGE_KEY); if (stored) { try { state = JSON.parse(
+                stored); } catch (e) {} }
+            const today = getTodayKey(); if (!state.history[today]) state.history[today] = { completedIds: [],
+                earnedXp: 0 };
             updateStreaks();
-            renderApp();
-
-            // Background cloud check (only if token exists)
-            if (GITHUB_TOKEN && AUTO_SYNC_ENABLED) {
-                setInterval(async () => { await loadFromCloud(); }, 30000);
-            }
+            renderApp(); if (GITHUB_TOKEN && AUTO_SYNC_ENABLED) { loadFromCloud(true);
+                setInterval(() => loadFromCloud(true), SYNC_INTERVAL); }
         }
 
-        function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            if (GITHUB_TOKEN && AUTO_SYNC_ENABLED) syncToCloud(true);
-            renderApp();
-        }
+        function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); if (GITHUB_TOKEN &&
+                AUTO_SYNC_ENABLED) syncToCloud(true);
+            renderApp(); }
 
-        function getTotalPossibleXp() { return state.blocks.reduce((sum, b) => sum + (Number(b.xp) || 0), 0); }
-        function getTodayData() { const today = getTodayKey(); return state.history[today] || { completedIds: [], earnedXp: 0 }; }
+        function getTotalPossibleXp() { return state.blocks.reduce((s, b) => s + (Number(b.xp) || 0), 0); }
 
-        function calculateDayMetrics(dateKey) {
-            const dayData = state.history[dateKey] || { completedIds: [], earnedXp: 0 };
-            const maxXp = getTotalPossibleXp(), earnedXp = dayData.earnedXp || 0;
-            const rate = maxXp > 0 ? Math.round((earnedXp / maxXp) * 100) : 0;
-            let status = 'REBUILD', rankBadge = 'NEEDS FOCUS';
-            if (rate >= 80) { status = 'ELITE'; rankBadge = 'LEGENDARY'; }
-            else if (rate >= 50) { status = 'SOLID'; rankBadge = 'WARRIOR'; }
-            return { earnedXp, maxXp, rate, status, rankBadge };
+        function getTodayData() { const t = getTodayKey(); return state.history[t] || { completedIds: [], earnedXp: 0 }; }
+
+        function calculateDayMetrics(dk) {
+            const dd = state.history[dk] || { completedIds: [], earnedXp: 0 },
+                mx = getTotalPossibleXp(),
+                ex = dd.earnedXp || 0,
+                rt = mx > 0 ? Math.round((ex / mx) * 100) : 0;
+            let st = 'REBUILD',
+                rb = 'NEEDS FOCUS'; if (rt >= 80) { st = 'ELITE';
+                rb = 'LEGENDARY'; } else if (rt >= 50) { st = 'SOLID';
+                rb = 'WARRIOR'; }
+            return { earnedXp: ex, maxXp: mx, rate: rt, status: st, rankBadge: rb };
         }
 
         function updateStreaks() {
-            let streak = 0, longest = state.longestStreak || 0, d = new Date();
-            while (true) {
-                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                const metrics = calculateDayMetrics(key);
-                if (key === getTodayKey()) { if (metrics.rate >= 80) streak++; }
-                else { if (metrics.rate >= 80) streak++; else break; }
-                d.setDate(d.getDate() - 1);
-            }
-            state.currentStreak = streak; if (streak > longest) state.longestStreak = streak;
+            let s = 0,
+                l = state.longestStreak || 0,
+                d = new Date(); while (true) { const k =
+                    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
+                    m = calculateDayMetrics(k); if (k === getTodayKey()) { if (m.rate >= 80) s++; } else { if (m
+                        .rate >= 80) s++; else break; }
+                d.setDate(d.getDate() - 1); }
+            state.currentStreak = s; if (s > l) state.longestStreak = s;
         }
 
-        function toggleTask(blockId) {
+        function toggleTask(bid) {
             if (!state.isLocked) { showToast("Lock blocks to start daily execution mode!", "info"); return; }
-            const today = getTodayKey();
-            if (!state.history[today]) state.history[today] = { completedIds: [], earnedXp: 0 };
-            const completed = state.history[today].completedIds, idx = completed.indexOf(blockId);
-            if (idx > -1) completed.splice(idx, 1); else { completed.push(blockId); playTickSound(); }
-            let total = 0;
-            completed.forEach(id => { const b = state.blocks.find(x => x.id === id); if (b) total += Number(b.xp); });
-            state.history[today].earnedXp = total; updateStreaks(); saveState();
+            const td = getTodayKey(); if (!state.history[td]) state.history[td] = { completedIds: [], earnedXp: 0 };
+            const comp = state.history[td].completedIds,
+                idx = comp.indexOf(bid); if (idx > -1) comp.splice(idx, 1);
+            else { comp.push(bid);
+                playTickSound(); }
+            let tot = 0;
+            comp.forEach(id => { const b = state.blocks.find(x => x.id === id); if (b) tot += Number(b.xp); });
+            state.history[td].earnedXp = tot;
+            updateStreaks();
+            saveState();
         }
 
         function addNewBlock() {
             if (state.blocks.length >= 7) { showToast("Maximum limit of 7 blocks reached!", "danger"); return; }
-            const name = document.getElementById('newBlockName').value.trim();
-            const xp = parseInt(document.getElementById('newBlockXp').value.trim());
-            if (!name) { showToast("Please enter a block name!", "danger"); return; }
-            if (isNaN(xp) || xp <= 0) { showToast("Please enter a valid positive XP value!", "danger"); return; }
-            state.blocks.push({ id: 'b_' + Date.now(), name, xp });
-            document.getElementById('newBlockName').value = ''; document.getElementById('newBlockXp').value = '';
-            showToast(`Added '${name}' with ${xp} XP!`, "success"); saveState();
-        }
-
-        function deleteBlock(blockId) { if (state.isLocked) return; state.blocks = state.blocks.filter(b => b.id !== blockId); showToast("Task block removed.", "info"); saveState(); }
-        function updateBlockName(blockId, newName) { if (state.isLocked) return; const block = state.blocks.find(b => b.id === blockId); if (block && newName.trim()) { block.name = newName.trim(); saveState(); } }
-        function updateBlockXp(blockId, newXp) { if (state.isLocked) return; const block = state.blocks.find(b => b.id === blockId); const val = parseInt(newXp); if (block && !isNaN(val) && val > 0) { block.xp = val; saveState(); } }
-
-        function toggleLock() {
-            state.isLocked = !state.isLocked;
-            showToast(state.isLocked ? "Blocks LOCKED. Daily execution active!" : "Blocks UNLOCKED. Edit Name & XP freely!", "info");
+            const nm = document.getElementById('newBlockName').value.trim(),
+                xp = parseInt(document.getElementById('newBlockXp').value.trim()); if (!nm) { showToast(
+                    "Please enter a block name!", "danger"); return; } if (isNaN(xp) || xp <= 0) { showToast(
+                    "Please enter a valid positive XP value!", "danger"); return; }
+            state.blocks.push({ id: 'b_' + Date.now(), name: nm, xp: xp });
+            document.getElementById('newBlockName').value = '';
+            document.getElementById('newBlockXp').value = '';
+            showToast(`Added '${nm}' with ${xp} XP!`, "success");
             saveState();
         }
 
-        function resetToday() {
-            const today = getTodayKey();
-            if (state.history[today]) { state.history[today].completedIds = []; state.history[today].earnedXp = 0; updateStreaks(); saveState(); showToast("Today's progress reset.", "info"); }
-        }
+        function deleteBlock(bid) { if (state.isLocked) return;
+            state.blocks = state.blocks.filter(b => b.id !== bid);
+            showToast("Task block removed.", "info");
+            saveState(); }
+
+        function updateBlockName(bid, nn) { if (state.isLocked) return; const b = state.blocks.find(x => x.id === bid); if (
+                b && nn.trim()) { b.name = nn.trim();
+                saveState(); } }
+
+        function updateBlockXp(bid, nx) { if (state.isLocked) return; const b = state.blocks.find(x => x.id === bid),
+                v = parseInt(nx); if (b && !isNaN(v) && v > 0) { b.xp = v;
+                saveState(); } }
+
+        function toggleLock() { state.isLocked = !state.isLocked;
+            showToast(state.isLocked ? "Blocks LOCKED. Daily execution active!" : "Blocks UNLOCKED. Edit Name & XP freely!",
+                "info");
+            saveState(); }
+
+        function resetToday() { const td = getTodayKey(); if (state.history[td]) { state.history[td].completedIds = [];
+                state.history[td].earnedXp = 0;
+                updateStreaks();
+                saveState();
+                showToast("Today's progress reset.", "info"); } }
 
         function openFactoryModal() { document.getElementById('factoryModal').classList.remove('hidden'); }
+
         function closeFactoryModal() { document.getElementById('factoryModal').classList.add('hidden'); }
-        function confirmFactoryReset() {
-            localStorage.removeItem(STORAGE_KEY);
+
+        function confirmFactoryReset() { localStorage.removeItem(STORAGE_KEY);
             state = { blocks: [...DEFAULT_BLOCKS], isLocked: true, history: {}, currentStreak: 0, longestStreak: 0 };
             state.history[getTodayKey()] = { completedIds: [], earnedXp: 0 };
-            closeFactoryModal(); saveState(); showToast("Factory reset complete!", "success");
-        }
+            closeFactoryModal();
+            saveState();
+            showToast("Factory reset complete!", "success"); }
 
-        function renderApp() {
-            renderHeaderAndMetrics(); renderTaskBlocks(); renderAiBadge(); renderProgressGauges();
-            renderChart(); renderWeeklyView(); renderMonthlyView(); renderYearlyHeatmap();
-        }
+        function renderApp() { renderHeaderAndMetrics();
+            renderTaskBlocks();
+            renderAiBadge();
+            renderProgressGauges();
+            renderChart();
+            renderWeeklyView();
+            renderMonthlyView();
+            renderYearlyHeatmap(); }
 
         function renderHeaderAndMetrics() {
-            const lockBtn = document.getElementById('lockToggleBtn'), lockIcon = document.getElementById('lockIcon'), lockText = document.getElementById('lockText');
-            const addContainer = document.getElementById('addBlockContainer'), taskInstructionText = document.getElementById('taskInstructionText');
-            if (state.isLocked) {
-                lockBtn.className = "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-900/30 flex items-center gap-2";
-                lockIcon.className = "fa-solid fa-lock"; lockText.innerText = "LOCK BLOCKS";
-                addContainer.classList.add('hidden'); taskInstructionText.innerText = "Click anywhere on a row to mark task complete.";
-            } else {
-                lockBtn.className = "px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-amber-900/30 flex items-center gap-2";
-                lockIcon.className = "fa-solid fa-lock-open"; lockText.innerText = "UNLOCK BLOCKS";
-                addContainer.classList.remove('hidden'); taskInstructionText.innerText = "Unlocked Mode: Edit names, change XP values, or delete blocks below.";
-            }
-            const metrics = calculateDayMetrics(getTodayKey());
+            const lb = document.getElementById('lockToggleBtn'),
+                li = document.getElementById('lockIcon'),
+                lt = document.getElementById('lockText'),
+                ac = document.getElementById('addBlockContainer'),
+                ti = document.getElementById('taskInstructionText'); if (state.isLocked) { lb.className =
+                    "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-900/30 flex items-center gap-2";
+                li.className = "fa-solid fa-lock";
+                lt.innerText = "LOCK BLOCKS";
+                ac.classList.add('hidden');
+                ti.innerText = "Click anywhere on a row to mark task complete."; } else { lb.className =
+                    "px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-amber-900/30 flex items-center gap-2";
+                li.className = "fa-solid fa-lock-open";
+                lt.innerText = "UNLOCK BLOCKS";
+                ac.classList.remove('hidden');
+                ti.innerText = "Unlocked Mode: Edit names, change XP values, or delete blocks below."; }
+            const m = calculateDayMetrics(getTodayKey());
             document.getElementById('metricStreak').innerText = state.currentStreak;
-            document.getElementById('metricXp').innerText = metrics.earnedXp;
-            document.getElementById('metricMaxXp').innerText = `/ ${metrics.maxXp} XP`;
-            document.getElementById('metricRate').innerText = `${metrics.rate}%`;
-            const rankBadgeText = document.getElementById('rankBadgeText'), rankBadgeIcon = document.getElementById('rankBadgeIcon');
-            rankBadgeText.innerText = metrics.rankBadge;
-            if (metrics.status === 'ELITE') {
-                rankBadgeText.className = "text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block mt-0.5 glow-emerald"; rankBadgeIcon.innerText = "👑";
-            } else if (metrics.status === 'SOLID') {
-                rankBadgeText.className = "text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 inline-block mt-0.5 glow-indigo"; rankBadgeIcon.innerText = "⚔️";
-            } else {
-                rankBadgeText.className = "text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 inline-block mt-0.5 glow-amber"; rankBadgeIcon.innerText = "🛡️";
-            }
+            document.getElementById('metricXp').innerText = m.earnedXp;
+            document.getElementById('metricMaxXp').innerText = `/ ${m.maxXp} XP`;
+            document.getElementById('metricRate').innerText = `${m.rate}%`;
+            const rt = document.getElementById('rankBadgeText'),
+                ri = document.getElementById('rankBadgeIcon');
+            rt.innerText = m.rankBadge; if (m.status === 'ELITE') { rt.className =
+                    "text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block mt-0.5 glow-emerald";
+                ri.innerText = "👑"; } else if (m.status === 'SOLID') { rt.className =
+                    "text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 inline-block mt-0.5 glow-indigo";
+                ri.innerText = "⚔️"; } else { rt.className =
+                    "text-xs font-black tracking-wider px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 inline-block mt-0.5 glow-amber";
+                ri.innerText = "🛡️"; }
             document.getElementById('blockCount').innerText = state.blocks.length;
         }
 
         function renderTaskBlocks() {
-            const container = document.getElementById('taskList'); container.innerHTML = '';
-            const todayData = getTodayData(), completedIds = todayData.completedIds || [];
-            state.blocks.forEach((block) => {
-                const isCompleted = completedIds.includes(block.id), card = document.createElement('div');
-                if (state.isLocked) {
-                    card.className = `glass-card p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-4 ${isCompleted ? 'bg-emerald-950/20 border-emerald-500/40 shadow-lg shadow-emerald-950/30' : 'border-slate-800 hover:border-slate-700'}`;
-                    card.onclick = () => toggleTask(block.id);
-                    card.innerHTML = `<div class="flex items-center gap-3.5 flex-1"><div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition ${isCompleted ? 'bg-emerald-500 border-emerald-500 text-slate-950' : 'border-slate-600'}">${isCompleted ? '<i class="fa-solid fa-check text-xs font-black"></i>' : ''}</div><span class="text-sm font-bold ${isCompleted ? 'line-through text-slate-400' : 'text-slate-100'}">${block.name}</span></div><span class="text-xs font-extrabold px-3 py-1 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 whitespace-nowrap">+${block.xp} XP</span>`;
-                } else {
-                    card.className = "glass-card p-3 rounded-2xl border border-indigo-500/20 flex items-center justify-between gap-3";
-                    const leftDiv = document.createElement('div'); leftDiv.className = "flex items-center gap-2 flex-1";
-                    const dragIcon = document.createElement('i'); dragIcon.className = "fa-solid fa-pen text-indigo-400 text-xs px-1";
-                    const nameInput = document.createElement('input'); nameInput.type = "text"; nameInput.value = block.name; nameInput.className = "flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"; nameInput.onchange = (e) => updateBlockName(block.id, e.target.value);
-                    const xpInput = document.createElement('input'); xpInput.type = "number"; xpInput.value = block.xp; xpInput.min = "1"; xpInput.className = "w-20 bg-slate-900 border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-indigo-400 font-bold text-center focus:outline-none focus:border-indigo-500"; xpInput.onchange = (e) => updateBlockXp(block.id, e.target.value);
-                    const xpLabel = document.createElement('span'); xpLabel.className = "text-xs font-bold text-slate-400"; xpLabel.innerText = "XP";
-                    leftDiv.appendChild(dragIcon); leftDiv.appendChild(nameInput); leftDiv.appendChild(xpInput); leftDiv.appendChild(xpLabel);
-                    const deleteBtn = document.createElement('button'); deleteBtn.className = "p-2 text-rose-400 hover:bg-rose-500/20 rounded-xl transition"; deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; deleteBtn.onclick = () => deleteBlock(block.id);
-                    card.appendChild(leftDiv); card.appendChild(deleteBtn);
-                }
-                container.appendChild(card);
-            });
+            const c = document.getElementById('taskList');
+            c.innerHTML = '';
+            const td = getTodayData(),
+                ci = td.completedIds || [];
+            state.blocks.forEach(b => { const ic = ci.includes(b.id),
+                    cd = document.createElement('div'); if (state.isLocked) { cd.className =
+                        `glass-card p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-4 ${ic?'bg-emerald-950/20 border-emerald-500/40 shadow-lg shadow-emerald-950/30':'border-slate-800 hover:border-slate-700'}`;
+                    cd.onclick = () => toggleTask(b.id);
+                    cd.innerHTML =
+                        `<div class="flex items-center gap-3.5 flex-1"><div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition ${ic?'bg-emerald-500 border-emerald-500 text-slate-950':'border-slate-600'}">${ic?'<i class="fa-solid fa-check text-xs font-black"></i>':''}</div><span class="text-sm font-bold ${ic?'line-through text-slate-400':'text-slate-100'}">${b.name}</span></div><span class="text-xs font-extrabold px-3 py-1 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 whitespace-nowrap">+${b.xp} XP</span>`; } else { cd
+                        .className =
+                        "glass-card p-3 rounded-2xl border border-indigo-500/20 flex items-center justify-between gap-3";
+                    const ld = document.createElement('div');
+                    ld.className = "flex items-center gap-2 flex-1";
+                    const dg = document.createElement('i');
+                    dg.className = "fa-solid fa-pen text-indigo-400 text-xs px-1";
+                    const ni = document.createElement('input');
+                    ni.type = "text";
+                    ni.value = b.name;
+                    ni.className =
+                        "flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500";
+                    ni.onchange = (e) => updateBlockName(b.id, e.target.value);
+                    const xi = document.createElement('input');
+                    xi.type = "number";
+                    xi.value = b.xp;
+                    xi.min = "1";
+                    xi.className =
+                        "w-20 bg-slate-900 border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-indigo-400 font-bold text-center focus:outline-none focus:border-indigo-500";
+                    xi.onchange = (e) => updateBlockXp(b.id, e.target.value);
+                    const xl = document.createElement('span');
+                    xl.className = "text-xs font-bold text-slate-400";
+                    xl.innerText = "XP";
+                    ld.appendChild(dg);
+                    ld.appendChild(ni);
+                    ld.appendChild(xi);
+                    ld.appendChild(xl);
+                    const db = document.createElement('button');
+                    db.className = "p-2 text-rose-400 hover:bg-rose-500/20 rounded-xl transition";
+                    db.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+                    db.onclick = () => deleteBlock(b.id);
+                    cd.appendChild(ld);
+                    cd.appendChild(db); }
+                c.appendChild(cd); });
         }
 
-        function renderAiBadge() {
-            const todayXp = calculateDayMetrics(getTodayKey()).earnedXp, yesterdayXp = calculateDayMetrics(getYesterdayKey()).earnedXp;
-            const badgeMessage = document.getElementById('aiBadgeMessage'), badgeTag = document.getElementById('aiBadgeTag'), diff = todayXp - yesterdayXp;
-            if (diff > 0) { badgeMessage.innerText = `Outstanding! You are +${diff} XP ahead of yesterday's execution benchmark.`; badgeTag.innerText = `BETTER THAN YESTERDAY (+${diff} XP)`; badgeTag.className = "text-xs font-black px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"; }
-            else if (diff < 0) { badgeMessage.innerText = `You are ${Math.abs(diff)} XP behind yesterday. Push through the remaining blocks!`; badgeTag.innerText = `BELOW YESTERDAY (${diff} XP)`; badgeTag.className = "text-xs font-black px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30"; }
-            else { badgeMessage.innerText = `Matched yesterday's performance baseline (${todayXp} XP).`; badgeTag.innerText = `EQUAL TO YESTERDAY`; badgeTag.className = "text-xs font-black px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700"; }
-        }
+        function renderAiBadge() { const tx = calculateDayMetrics(getTodayKey()).earnedXp,
+                yx = calculateDayMetrics(getYesterdayKey()).earnedXp,
+                bm = document.getElementById('aiBadgeMessage'),
+                bt = document.getElementById('aiBadgeTag'),
+                df = tx - yx; if (df > 0) { bm.innerText =
+                    `Outstanding! You are +${df} XP ahead of yesterday's execution benchmark.`;
+                bt.innerText = `BETTER THAN YESTERDAY (+${df} XP)`;
+                bt.className =
+                    "text-xs font-black px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"; } else if (
+                df < 0) { bm.innerText =
+                    `You are ${Math.abs(df)} XP behind yesterday. Push through the remaining blocks!`;
+                bt.innerText = `BELOW YESTERDAY (${df} XP)`;
+                bt.className =
+                    "text-xs font-black px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30"; } else { bm
+                    .innerText = `Matched yesterday's performance baseline (${tx} XP).`;
+                bt.innerText = `EQUAL TO YESTERDAY`;
+                bt.className =
+                    "text-xs font-black px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700"; } }
 
-        function renderProgressGauges() {
-            const metrics = calculateDayMetrics(getTodayKey()), fill = document.getElementById('progressBarFill'), text = document.getElementById('progressBarText'), glowPanel = document.getElementById('targetGlowPanel');
-            fill.style.width = `${metrics.rate}%`; text.innerText = `${metrics.rate}%`;
-            if (metrics.rate >= 80) glowPanel.className = "glass-panel p-6 rounded-2xl border border-emerald-500/40 glow-emerald space-y-5 transition-all duration-300";
-            else if (metrics.rate >= 50) glowPanel.className = "glass-panel p-6 rounded-2xl border border-indigo-500/40 glow-indigo space-y-5 transition-all duration-300";
-            else glowPanel.className = "glass-panel p-6 rounded-2xl border border-slate-800 space-y-5 transition-all duration-300";
-        }
+        function renderProgressGauges() { const m = calculateDayMetrics(getTodayKey()),
+                f = document.getElementById('progressBarFill'),
+                t = document.getElementById('progressBarText'),
+                gp = document.getElementById('targetGlowPanel');
+            f.style.width = `${m.rate}%`;
+            t.innerText = `${m.rate}%`; if (m.rate >= 80) gp.className =
+                "glass-panel p-6 rounded-2xl border border-emerald-500/40 glow-emerald space-y-5 transition-all duration-300";
+            else if (m.rate >= 50) gp.className =
+                "glass-panel p-6 rounded-2xl border border-indigo-500/40 glow-indigo space-y-5 transition-all duration-300";
+            else gp.className =
+                "glass-panel p-6 rounded-2xl border border-slate-800 space-y-5 transition-all duration-300"; }
 
-        function renderChart() {
-            const ctx = document.getElementById('xpTrendChart').getContext('2d'); const labels = [], data = [];
-            for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; labels.push(`${d.getDate()}/${d.getMonth()+1}`); data.push(calculateDayMetrics(key).earnedXp); }
-            if (trendChartInstance) trendChartInstance.destroy();
-            const gradient = ctx.createLinearGradient(0, 0, 0, 200); gradient.addColorStop(0, 'rgba(16, 185, 129, 0.4)'); gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
-            trendChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'XP Earned', data, borderColor: '#10b981', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: gradient, pointBackgroundColor: '#10b981', pointRadius: 3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 10 } } } } } });
-        }
+        function renderChart() { const ctx = document.getElementById('xpTrendChart').getContext('2d'),
+                labels = [],
+                data = []; for (let i = 13; i >= 0; i--) { const d = new Date();
+                d.setDate(d.getDate() - i); const k =
+                    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                labels.push(`${d.getDate()}/${d.getMonth()+1}`);
+                data.push(calculateDayMetrics(k).earnedXp); } if (trendChartInstance) trendChartInstance.destroy();
+            const g = ctx.createLinearGradient(0, 0, 0, 200);
+            g.addColorStop(0, 'rgba(16, 185, 129, 0.4)');
+            g.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+            trendChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'XP Earned',
+                    data, borderColor: '#10b981', borderWidth: 3, tension: 0.4, fill: true,
+                    backgroundColor: g, pointBackgroundColor: '#10b981', pointRadius: 3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                    scales: { x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b',
+                            font: { size: 10 } } } } } }); }
 
-        function renderWeeklyView() {
-            const grid = document.getElementById('weeklyGrid'); grid.innerHTML = ''; const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date(); d.setDate(d.getDate() - i); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                const metrics = calculateDayMetrics(key), isToday = key === getTodayKey(), card = document.createElement('div');
-                card.className = `glass-card p-4 rounded-2xl border space-y-3 ${isToday ? 'border-indigo-400/50 ring-1 ring-indigo-500/30 shadow-lg shadow-indigo-500/10' : 'border-slate-800'}`;
-                card.innerHTML = `<div class="flex justify-between items-center text-xs font-bold"><span class="${isToday ? 'text-indigo-400' : 'text-slate-400'}">${days[d.getDay()]}${isToday ? ' • TODAY' : ''}</span><span class="text-slate-500">${d.getDate()}/${d.getMonth()+1}</span></div><div><div class="text-xl font-extrabold text-white">${metrics.earnedXp} <span class="text-xs text-slate-500">XP</span></div><p class="text-xs font-semibold text-slate-400">${metrics.rate}% Executed</p></div><span class="text-[10px] font-black px-2 py-0.5 rounded-md ${metrics.status === 'ELITE' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : metrics.status === 'SOLID' ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">${metrics.rankBadge}</span>`;
-                grid.appendChild(card);
-            }
-        }
+        function renderWeeklyView() { const g = document.getElementById('weeklyGrid');
+            g.innerHTML = '';
+            const ds = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; for (let i = 6; i >= 0; i--) { const d =
+                    new Date();
+                d.setDate(d.getDate() - i); const k =
+                    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
+                    m = calculateDayMetrics(k),
+                    it = k === getTodayKey(),
+                    cd = document.createElement('div');
+                cd.className =
+                    `glass-card p-4 rounded-2xl border space-y-3 ${it?'border-indigo-400/50 ring-1 ring-indigo-500/30 shadow-lg shadow-indigo-500/10':'border-slate-800'}`;
+                cd.innerHTML =
+                    `<div class="flex justify-between items-center text-xs font-bold"><span class="${it?'text-indigo-400':'text-slate-400'}">${ds[d.getDay()]}${it?' • TODAY':''}</span><span class="text-slate-500">${d.getDate()}/${d.getMonth()+1}</span></div><div><div class="text-xl font-extrabold text-white">${m.earnedXp} <span class="text-xs text-slate-500">XP</span></div><p class="text-xs font-semibold text-slate-400">${m.rate}% Executed</p></div><span class="text-[10px] font-black px-2 py-0.5 rounded-md ${m.status==='ELITE'?'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30':m.status==='SOLID'?'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30':'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">${m.rankBadge}</span>`;
+                g.appendChild(cd); } }
 
-        function renderMonthlyView() {
-            const grid = document.getElementById('monthlyCalendarGrid'); grid.innerHTML = '';
-            const now = new Date(), year = now.getFullYear(), month = now.getMonth(), today = now.getDate();
-            const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month + 1, 0).getDate(), startOffset = (firstDay === 0 ? 6 : firstDay - 1);
-            for (let i = 0; i < startOffset; i++) { const spacer = document.createElement('div'); spacer.className = "p-2.5 rounded-xl border border-transparent opacity-0"; spacer.innerHTML = '<div class="text-xs font-bold text-transparent">0</div>'; grid.appendChild(spacer); }
-            let totalXp = 0, totalRate = 0, bestXp = 0, bestDay = '—';
-            for (let day = 1; day <= daysInMonth; day++) {
-                const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`, metrics = calculateDayMetrics(key), isToday = (day === today);
-                totalXp += metrics.earnedXp; totalRate += metrics.rate; if (metrics.earnedXp > bestXp) { bestXp = metrics.earnedXp; bestDay = `Day ${day}`; }
-                let bgClass = 'bg-slate-900 border-slate-800', badgeClass = 'text-slate-500';
-                if (metrics.rate >= 80) { bgClass = 'bg-emerald-950/30 border-emerald-500/40'; badgeClass = 'text-emerald-400 font-extrabold'; }
-                else if (metrics.rate >= 50) { bgClass = 'bg-indigo-950/25 border-indigo-500/30'; badgeClass = 'text-indigo-400 font-bold'; }
-                else if (metrics.earnedXp > 0) { bgClass = 'bg-amber-950/20 border-amber-500/25'; badgeClass = 'text-amber-400 font-semibold'; }
-                if (isToday) bgClass += ' ring-2 ring-white/30 ring-offset-1 ring-offset-slate-900';
-                const card = document.createElement('div'); card.className = `p-3 rounded-xl border text-center space-y-1 transition-all duration-200 cursor-default ${bgClass}`;
-                card.title = `${key}: ${metrics.earnedXp} XP — ${metrics.rate}% completion`;
-                card.innerHTML = `<div class="text-xs font-bold ${isToday ? 'text-white' : 'text-slate-400'}">${day}${isToday ? ' •' : ''}</div><div class="text-sm font-black text-white">${metrics.earnedXp}<span class="text-[10px] text-slate-500 font-medium">xp</span></div><div class="text-[10px] font-semibold ${badgeClass}">${metrics.rate}%</div>`;
-                grid.appendChild(card);
-            }
-            document.getElementById('monthlyTotalXp').innerText = totalXp;
-            document.getElementById('monthlyAvgRate').innerText = `${Math.round(totalRate / daysInMonth)}%`;
-            document.getElementById('monthlyBestDay').innerText = bestDay;
-        }
-function renderYearlyHeatmap() {
-    const grid = document.getElementById('yearlyHeatmap'), monthLabelsContainer = document.getElementById('yearlyMonthLabels');
-    grid.innerHTML = ''; monthLabelsContainer.innerHTML = '';
-    const now = new Date(), year = now.getFullYear(); document.getElementById('yearlyYearLabel').innerText = year;
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], cells = []; let eliteCount = 0;
-    for (let i = 364; i >= 0; i--) { 
-        const d = new Date(); d.setDate(d.getDate() - i); 
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        const metrics = calculateDayMetrics(key); 
-        if (metrics.rate >= 80) eliteCount++; 
-        cells.push({ 
-            key, 
-            dayOfWeek: d.getDay(), 
-            date: d.getDate(), 
-            month: d.getMonth(), 
-            monthName: monthNames[d.getMonth()], 
-            fullDate: `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`, 
-            ...metrics 
-        }); 
-    }
-    document.getElementById('yearlyEliteCount').innerText = eliteCount;
-    const firstDayOfWeek = cells[0].dayOfWeek, emptyPrefix = (firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1);
-    for (let i = 0; i < emptyPrefix; i++) { 
-        const spacer = document.createElement('div'); 
-        spacer.className = 'w-full h-full rounded-sm opacity-0'; 
-        grid.appendChild(spacer); 
-    }
-    cells.forEach((cell) => { 
-        const cellEl = document.createElement('div'); 
-        let bg = 'bg-slate-800/70'; 
-        if (cell.rate >= 80) bg = 'bg-emerald-400'; 
-        else if (cell.rate >= 65) bg = 'bg-emerald-500/65'; 
-        else if (cell.rate >= 50) bg = 'bg-indigo-500/55'; 
-        else if (cell.rate >= 25) bg = 'bg-indigo-500/35'; 
-        else if (cell.earnedXp > 0) bg = 'bg-amber-500/40'; 
-        
-        // Custom tooltip with data attribute
-        cellEl.className = `w-full h-full rounded-sm ${bg} transition-all duration-150 hover:scale-150 hover:z-10 hover:ring-2 hover:ring-white/40 cursor-default heatmap-cell`;
-        cellEl.setAttribute('data-tooltip', `${cell.fullDate}: ${cell.earnedXp} XP (${cell.rate}%) — ${cell.rankBadge}`);
-        
-        grid.appendChild(cellEl); 
-    });
-}
-        function switchTab(tabName) {
-            document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => { el.className = "tab-btn px-4 py-2 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800"; });
-            document.getElementById(`view-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabName}`).className = "tab-btn px-4 py-2 rounded-lg transition-all duration-200 bg-indigo-600 text-white shadow-md";
-            if (tabName === 'yearly') renderYearlyHeatmap(); if (tabName === 'monthly') renderMonthlyView();
-        }
+        function renderMonthlyView() { const g = document.getElementById('monthlyCalendarGrid');
+            g.innerHTML = '';
+            const n = new Date(),
+                yr = n.getFullYear(),
+                mo = n.getMonth(),
+                td = n.getDate(),
+                fd = new Date(yr, mo, 1).getDay(),
+                dim = new Date(yr, mo + 1, 0).getDate(),
+                so = (fd === 0 ? 6 : fd - 1); for (let i = 0; i < so; i++) { const sp = document.createElement(
+                    'div');
+                sp.className = "p-2.5 rounded-xl border border-transparent opacity-0";
+                sp.innerHTML = '<div class="text-xs font-bold text-transparent">0</div>';
+                g.appendChild(sp); }
+            let tX = 0,
+                tR = 0,
+                bX = 0,
+                bD = '—'; for (let day = 1; day <= dim; day++) { const k =
+                    `${yr}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,
+                    m = calculateDayMetrics(k),
+                    it = (day === td);
+                tX += m.earnedXp;
+                tR += m.rate; if (m.earnedXp > bX) { bX = m.earnedXp;
+                    bD = `Day ${day}`; }
+                let bg = 'bg-slate-900 border-slate-800',
+                    bc = 'text-slate-500'; if (m.rate >= 80) { bg =
+                        'bg-emerald-950/30 border-emerald-500/40';
+                    bc = 'text-emerald-400 font-extrabold'; } else if (m.rate >= 50) { bg =
+                        'bg-indigo-950/25 border-indigo-500/30';
+                    bc = 'text-indigo-400 font-bold'; } else if (m.earnedXp > 0) { bg =
+                        'bg-amber-950/20 border-amber-500/25';
+                    bc = 'text-amber-400 font-semibold'; } if (it) bg +=
+                    ' ring-2 ring-white/30 ring-offset-1 ring-offset-slate-900';
+                const cd = document.createElement('div');
+                cd.className =
+                    `p-3 rounded-xl border text-center space-y-1 transition-all duration-200 cursor-default ${bg}`;
+                cd.title = `${k}: ${m.earnedXp} XP — ${m.rate}% completion`;
+                cd.innerHTML =
+                    `<div class="text-xs font-bold ${it?'text-white':'text-slate-400'}">${day}${it?' •':''}</div><div class="text-sm font-black text-white">${m.earnedXp}<span class="text-[10px] text-slate-500 font-medium">xp</span></div><div class="text-[10px] font-semibold ${bc}">${m.rate}%</div>`;
+                g.appendChild(cd); }
+            document.getElementById('monthlyTotalXp').innerText = tX;
+            document.getElementById('monthlyAvgRate').innerText = `${Math.round(tR/dim)}%`;
+            document.getElementById('monthlyBestDay').innerText = bD; }
 
-        function openPrintModal() { const now = new Date(); document.getElementById('printMonthPicker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; document.getElementById('printModal').classList.remove('hidden'); }
+        function renderYearlyHeatmap() { const g = document.getElementById('yearlyHeatmap'),
+                ml = document.getElementById('yearlyMonthLabels');
+            g.innerHTML = '';
+            ml.innerHTML = '';
+            const n = new Date(),
+                yr = n.getFullYear();
+            document.getElementById('yearlyYearLabel').innerText = yr;
+            const mn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                cells = [];
+            let ec = 0; for (let i = 364; i >= 0; i--) { const d = new Date();
+                d.setDate(d.getDate() - i); const k =
+                    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
+                    m = calculateDayMetrics(k); if (m.rate >= 80) ec++;
+                cells.push({ key: k, dayOfWeek: d.getDay(), date: d.getDate(), month: d.getMonth(),
+                    monthName: mn[d.getMonth()],
+                    fullDate: `${d.getDate()} ${mn[d.getMonth()]} ${d.getFullYear()}`, ...m }); }
+            document.getElementById('yearlyEliteCount').innerText = ec;
+            const fd = cells[0].dayOfWeek,
+                ep = (fd === 0 ? 6 : fd - 1); for (let i = 0; i < ep; i++) { const sp = document.createElement(
+                    'div');
+                sp.className = 'w-full h-full rounded-sm opacity-0';
+                g.appendChild(sp); }
+            cells.forEach(cell => { const ce = document.createElement('div');
+                let bg = 'bg-slate-800/70'; if (cell.rate >= 80) bg = 'bg-emerald-400'; else if (cell.rate >=
+                    65) bg = 'bg-emerald-500/65'; else if (cell.rate >= 50) bg = 'bg-indigo-500/55'; else if (
+                    cell.rate >= 25) bg = 'bg-indigo-500/35'; else if (cell.earnedXp > 0) bg =
+                    'bg-amber-500/40';
+                ce.className =
+                    `w-full h-full rounded-sm ${bg} transition-all duration-150 hover:scale-150 hover:z-10 hover:ring-2 hover:ring-white/40 cursor-default heatmap-cell`;
+                ce.setAttribute('data-tooltip',
+                    `${cell.fullDate}: ${cell.earnedXp} XP (${cell.rate}%) — ${cell.rankBadge}`);
+                g.appendChild(ce); });
+            const tc = Math.ceil((cells.length + ep) / 7);
+            let lh = '',
+                lm = -1;
+            cells.forEach((cell, idx) => { const wi = Math.floor((idx + ep) / 7); if (cell.month !== lm && cell
+                    .date <= 7) { lh +=
+                        `<span style="grid-column:${wi+1}" class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">${cell.monthName}</span>`;
+                    lm = cell.month; } });
+            ml.style.display = 'grid';
+            ml.style.gridTemplateColumns = `repeat(${tc}, minmax(0, 1fr))`;
+            ml.style.gap = '3px';
+            ml.innerHTML = lh; }
+
+        function switchTab(tn) { document.querySelectorAll('.view-panel').forEach(el => el.classList.add(
+            'hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => { el.className =
+                    "tab-btn px-4 py-2 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800"; });
+            document.getElementById(`view-${tn}`).classList.remove('hidden');
+            document.getElementById(`tab-${tn}`).className =
+                "tab-btn px-4 py-2 rounded-lg transition-all duration-200 bg-indigo-600 text-white shadow-md"; if (tn ===
+                'yearly') renderYearlyHeatmap(); if (tn === 'monthly') renderMonthlyView(); }
+
+        function openPrintModal() { const n = new Date();
+            document.getElementById('printMonthPicker').value =
+                `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
+            document.getElementById('printModal').classList.remove('hidden'); }
+
         function closePrintModal() { document.getElementById('printModal').classList.add('hidden'); }
 
-        function executePrint() {
-            const monthVal = document.getElementById('printMonthPicker').value, quote = document.getElementById('printQuoteInput').value;
-            const [year, month] = monthVal.split('-');
-            const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-            document.getElementById('printSheetSubheader').innerText = `MONTH: ${monthNames[parseInt(month)-1]} | YEAR: ${year}`;
-            document.getElementById('printSheetQuote').innerText = quote ? `"${quote}"` : '';
-            const body = document.getElementById('printableSheetBody'); body.innerHTML = '';
-            state.blocks.forEach(block => { const tr = document.createElement('tr'); let tds = `<td style="text-align: left !important; font-weight: 700; padding-left: 8px !important; font-size: 9px !important; line-height: 1.35 !important; word-break: break-word !important;">${block.name}<br><span style="font-size:7px;color:#555;font-weight:500;">${block.xp} XP</span></td>`; for (let i = 1; i <= 31; i++) tds += `<td></td>`; tr.innerHTML = tds; body.appendChild(tr); });
-            closePrintModal(); setTimeout(() => { window.print(); }, 400);
-        }
-
+        function executePrint() { const mv = document.getElementById('printMonthPicker').value,
+                q = document.getElementById('printQuoteInput').value,
+                [yr, mo] = mv.split('-'),
+                mns = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER",
+                    "NOVEMBER", "DECEMBER"
+                ];
+            document.getElementById('printSheetSubheader').innerText =
+                `MONTH: ${mns[parseInt(mo)-1]} | YEAR: ${yr}`;
+            document.getElementById('printSheetQuote').innerText = q ? `"${q}"` : '';
+            const bd = document.getElementById('printableSheetBody');
+            bd.innerHTML = '';
+            state.blocks.forEach(b => { const tr = document.createElement('tr');
+                let tds =
+                    `<td style="text-align:left!important;font-weight:700;padding-left:8px!important;font-size:9px!important;line-height:1.35!important;word-break:break-word!important;">${b.name}<br><span style="font-size:7px;color:#555;font-weight:500;">${b.xp} XP</span></td>`;
+                for (let i = 1; i <= 31; i++) tds += `<td></td>`;
+                tr.innerHTML = tds;
+                bd.appendChild(tr); });
+            closePrintModal();
+            setTimeout(() => { window.print(); }, 400); }
         document.addEventListener('DOMContentLoaded', () => { loadState(); });
     </script>
 </body>
